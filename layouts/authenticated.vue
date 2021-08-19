@@ -75,6 +75,12 @@
               >
                 <v-list-item-title>Settings</v-list-item-title>
               </v-list-item>
+
+              <v-list-item
+                @click="logout"
+              >
+                <v-list-item-title>Log out</v-list-item-title>
+              </v-list-item>
             </v-list>
           </v-menu>
         </div>
@@ -115,14 +121,56 @@
 
 <script>
 export default {
+    middleware: 'auth',
     data() {
         return {
             overlay: false,
         }
     },
     mounted() {
-        this.$nuxt.$emit('isPageLoading', false);
         console.log(this.$auth);
+
+        if( this.$auth.strategy.name == 'laravelJWT' ) {
+            this.overlay = true;
+            this.saveGoogleUserToDB();
+        }
+
+        if( this.$auth.strategy.name == 'laravelJWT' ) {
+          this.overlay = false;
+        }
+    },
+    methods: {
+      logout() {
+        this.overlay = true;
+        this.$auth.logout();
+      },
+      saveGoogleUserToDB() {
+            const token = this.$auth.strategy.token.get();
+            const userInfo = {...this.$auth.user, token};
+
+            console.log(this.$auth);
+            this.$axios
+            .post('/api/loginWithGoogle', userInfo)
+            .then(response => {
+                if( response.data.status == 'success' ) {
+                    this.getLoginGoogleUser(token);
+                }else {
+                    this.info = response.data.message;
+                }
+            });
+        },
+        getLoginGoogleUser(access_token) {
+            this.$axios
+            .post('/api/megoogle', { access_token: access_token })
+            .then(response => {
+                if( response.data ) {
+                    this.overlay = false;
+                    this.$auth.setUser(response.data);
+                }else {
+                    this.info = response.data.message;
+                }
+            });
+        },
     }
 }
 </script>

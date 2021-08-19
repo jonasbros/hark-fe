@@ -46,14 +46,17 @@ export default {
   ],
 
   auth: {
-    redirect: false,
+    redirect: {
+      home: '/newsfeed',
+      logout: '/login'
+    },
     strategies: {
       'laravelJWT': {
         provider: 'laravel/jwt',
         url: '/api',
         endpoints: {
           login: { url: '/login', method: 'post' },
-          logout: { url: '/logout', method: 'post' },
+          logout: { url: '/logout', method: 'get' },
           user: { url: '/me', method: 'post' },
         },
         token: {

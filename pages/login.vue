@@ -121,15 +121,6 @@ export default {
     },
     mounted() { 
         this.$nuxt.$emit('isPageLoading', false);
-
-        if( this.$auth.loggedIn && this.$auth.strategy.name == 'google' && this.$auth.strategy.token.get() ) {
-            this.$nuxt.$emit('isPageLoading', true);
-            this.saveUserToDB();
-        }
-
-        if( this.$auth.loggedIn && this.$auth.strategy.name == 'laravelJWT' ) {
-            this.$router.push('/newsfeed');
-        }
     },
     methods: {
         formLogin() {
@@ -159,35 +150,8 @@ export default {
                 }
             });
         },
-        loginWithGoogle() {
-            this.$auth.loginWith('google');
-        },
-        saveUserToDB() {
-            const token = this.$auth.strategy.token.get();
-            const userInfo = {...this.$auth.user, token};
-
-            console.log(this.$auth);
-            this.$axios
-            .post('/api/loginWithGoogle', userInfo)
-            .then(response => {
-                if( response.data.status == 'success' ) {
-                    this.googleLoginGetUser(token);
-                }else {
-                    this.info = response.data.message;
-                }
-            });
-        },
-        googleLoginGetUser(access_token) {
-            this.$axios
-            .post('/api/megoogle', { access_token: access_token })
-            .then(response => {
-                if( response.data ) {
-                    this.$nuxt.$emit('isPageLoading', false);
-                    this.$router.push('/newsfeed');
-                }else {
-                    this.info = response.data.message;
-                }
-            });
+        async loginWithGoogle() {
+            await this.$auth.loginWith('google');
         },
         passwordErrors (errors = []) {
             if (!this.$v.login.password.$dirty) return errors;

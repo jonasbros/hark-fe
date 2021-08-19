@@ -5,7 +5,6 @@
 <script>
 export default {
   layout: 'authenticated',
-  middleware: 'auth',
   mounted() {
     this.$nuxt.$emit('isPageLoading', false);
   }
