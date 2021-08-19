@@ -3,36 +3,105 @@
     <v-app-bar
       fixed
       app
-      color="#000D1F"
-      class="text-uppercase"
+      color="#0e0e0e"
+      class="hark-navbar text-uppercase"
     >
       <v-toolbar-title 
         class="ml-6 font-weight-bold"
         color="#00FF78"
         to="/"
       >
-        <NuxtLink to="/">HARK</NuxtLink>
+        <NuxtLink to="/newsfeed">HARK</NuxtLink>
       </v-toolbar-title>
-      <v-spacer />
-      <NuxtLink
-        class="mr-4 font-weight-bold"
-        to="/signup"
-      >
-        Sign Up
-      </NuxtLink>
-      <NuxtLink 
-        class="mr-6 font-weight-bold"
-        to="/login"
-      >
-        Log In
-      </NuxtLink>
+        <v-spacer></v-spacer>
+
+        
+      <div class="hark-navbar__items-container ml-5 d-flex justify-space-between align-center">
+        <v-text-field
+          class="hark-navbar__search"
+          solo
+          dense
+          hide-details="auto"
+          label="Search Hark"
+          prepend-inner-icon="mdi-magnify"
+        ></v-text-field>
+
+
+        <div class="d-flex justify-end align-center">
+          <v-btn 
+            icon
+            color="secondary"
+          >
+            <v-icon>mdi-message-text-outline</v-icon>
+          </v-btn>
+
+          <v-btn
+            icon
+            color="secondary"
+          >
+            <v-icon>mdi-bell</v-icon>
+          </v-btn>
+
+          <v-menu
+            left
+            bottom
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-avatar 
+                  color="primary"
+                  size="36"
+                >
+                  <v-icon dark>
+                    mdi-account-circle
+                  </v-icon>
+                </v-avatar> 
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item
+                @click="() => {}"
+              >
+                <v-list-item-title>Profile</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                @click="() => {}"
+              >
+                <v-list-item-title>Settings</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
+      </div>
     </v-app-bar>
 
     <v-main>
-      <v-container>
-        <h1>AUTH'd</h1>
-        <Nuxt/>
-      </v-container>
+      <v-row class="justify-center">
+        <v-col class="hark-sidebar__left col-3">
+          <v-container>
+            <h2>LEFT SIDEBAR</h2>
+          </v-container>
+        </v-col>
+        
+        <v-col class="col-6">
+          <v-container>
+            <Nuxt/>
+          </v-container>
+        </v-col>
+
+        <v-col class="hark-sidebar__right  col-3">
+          <v-container>
+            <h2>RIGHT SIDEBAR</h2>
+          </v-container>
+        </v-col>
+      </v-row>
+
     </v-main>
 
     <v-overlay :value="overlay">
@@ -53,10 +122,34 @@ export default {
     },
     mounted() {
         this.$nuxt.$emit('isPageLoading', false);
+        console.log(this.$auth);
     }
 }
 </script>
 
-<style>
+<style lang="scss">
+  .hark-navbar__items-container {
+    width: 90%;
+  }
 
+  .hark-navbar__search .v-input__slot {
+    width: 30%;
+  }
+  
+  .hark-navbar .v-input, .hark-navbar .v-toolbar {
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .hark-sidebar__left, .hark-sidebar__right {
+    position: fixed;
+  }
+
+  .hark-sidebar__left {
+    left: 0;
+  }
+
+  .hark-sidebar__right {
+    right: 0;
+  }
 </style>

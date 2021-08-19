@@ -1,5 +1,5 @@
 <template>
-  <h1>newfessdfsd</h1>
+  <h1>AUTH</h1>
 </template>
 
 <script>

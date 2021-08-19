@@ -109,7 +109,7 @@ export default {
             statusMessage: '',
             submitted: false,
             login: {
-                email: 'testicleemail@emailtesticle.com',
+                email: 'test1@email.com',
                 password: 'jost883446',
             },
         }
@@ -125,6 +125,10 @@ export default {
         if( this.$auth.loggedIn && this.$auth.strategy.name == 'google' && this.$auth.strategy.token.get() ) {
             this.$nuxt.$emit('isPageLoading', true);
             this.saveUserToDB();
+        }
+
+        if( this.$auth.loggedIn && this.$auth.strategy.name == 'laravelJWT' ) {
+            this.$router.push('/newsfeed');
         }
     },
     methods: {
