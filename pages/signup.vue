@@ -68,7 +68,7 @@
         <v-row justify="center">
             <v-col class="col-6">
                 <v-img
-                    style="cursor: pointer;"
+                    style="cursor: pointer"
                     lazy-src="/google.png"
                     max-height="35"
                     max-width="180"
@@ -100,12 +100,11 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-import { required, minLength, email } from 'vuelidate/lib/validators';
+import { validationMixin } from 'vuelidate'
+import { required, minLength, email } from 'vuelidate/lib/validators'
 
 export default {
     mixins: [validationMixin],
-
     validations: {
       signup: {
         password: { required, minLength: minLength(8) },
@@ -129,86 +128,87 @@ export default {
     },
     computed: {
         isFormValid() {
-            return !this.$v.$invalid;
+            return !this.$v.$invalid
         }
     },
-    mounted() {        
+    mounted() {      
+        this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+  
         if( this.$auth.loggedIn && this.$auth.strategy.name == 'google' && this.$auth.strategy.token.get() ) {
-            this.$nuxt.$emit('isPageLoading', true);
-            this.saveUserToDB();
+            this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
+            this.saveUserToDB()
         }
     },
     methods: {
         createUser() {
-            this.$nuxt.$emit('isPageLoading', true);
+            this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
 
             this.$axios.post('/api/register', this.signup)
             .then((response) => {
                 if( response.data.access_token ) {
-                    this.$nuxt.$emit('isPageLoading', false);
-                    this.$router.push('/newsfeed');
+                    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+                    this.$router.push({ name: 'newsfeed' })
                 }
             })
             .catch((e) => {
-                console.log(e.response);
                 if( e.response.status == 422 ) {
-                    this.errorMessage = e.response.data.message;
-                    this.errorSnackbar = true;
+                    this.errorMessage = e.response.data.message
+                    this.errorSnackbar = true
 
-                    this.signup.email = '';
-                    this.$v.signup.email.$touch();
+                    this.signup.email = ''
+                    this.$v.signup.email.$touch()
                 }
-                this.$nuxt.$emit('isPageLoading', false);
-            });
+                this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+            })
         },
         loginWithGoogle() {
-            this.$auth.loginWith('google');
+            this.$auth.loginWith('google')
         },
         saveUserToDB() {
-            const token = this.$auth.strategy.token.get();
-            const userInfo = {...this.$auth.user, token};
+            const token = this.$auth.strategy.token.get()
+            const userInfo = {...this.$auth.user, token}
 
             this.$axios
             .post('/api/loginWithGoogle', userInfo)
             .then(response => {
                 if( response.data.status == 'success' ) {
-                    this.googleLoginGetUser(token);
+                    this.googleLoginGetUser(token)
                 }else {
-                    this.info = response.data.message;
+                    this.info = response.data.message
                 }
-            });
+            })
         },
         googleLoginGetUser(access_token) {
             this.$axios
             .post('/api/megoogle', { access_token: access_token })
             .then(response => {
                 if( response.data ) {
-                    this.$nuxt.$emit('isPageLoading', false);
-                    this.$router.push('/newsfeed');
+                    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
+                    this.$router.push({ name: 'newsfeed' })
                 }else {
-                    this.info = response.data.message;
+                    this.info = response.data.message
                 }
-            });
+            })
         },
         nameErrors (errors = []) {
-            if (!this.$v.signup.name.$dirty) return errors;
-            !this.$v.signup.name.required && errors.push('Name is required.');
+            if (!this.$v.signup.name.$dirty) return errors
+            !this.$v.signup.name.required && errors.push('Name is required.')
 
-            return errors;
+            return errors
         },
         passwordErrors (errors = []) {
-            if (!this.$v.signup.password.$dirty) return errors;
-            !this.$v.signup.password.minLength && errors.push('Password should be at least 8 characters long.');
-            !this.$v.signup.password.required && errors.push('Password is required.');
+            if (!this.$v.signup.password.$dirty) return errors
+            !this.$v.signup.password.minLength && errors.push('Password should be at least 8 characters long.')
+            !this.$v.signup.password.required && errors.push('Password is required.')
 
-            return errors;
+            return errors
         },
         emailErrors (errors = []) {
-            if (!this.$v.signup.email.$dirty) return errors;
-            !this.$v.signup.email.email && errors.push('Must be valid e-mail');
-            !this.$v.signup.email.required && errors.push('E-mail is required');
+            if (!this.$v.signup.email.$dirty) return errors
+            !this.$v.signup.email.email && errors.push('Must be valid e-mail')
+            !this.$v.signup.email.required && errors.push('E-mail is required')
 
-            return errors;
+            return errors
         },
     }
 }

@@ -1,19 +1,19 @@
 <template>
     <v-container>
         <v-row justify="center" class="my-8">
-            <v-col class="col-6 text-center text-h2 primary--text">
+            <v-col class="col-4 text-center text-h2 primary--text">
                 <h1 class="">HARK</h1>
             </v-col>
         </v-row>
         
         <v-row justify="center">
-            <v-col class="col-6">
+            <v-col class="col-4">
                 <h1>LOG IN</h1>
             </v-col>
         </v-row>
 
         <v-row justify="center">
-            <v-col class="col-6">
+            <v-col class="col-4">
                 <form autocomplete="off" @submit.prevent="formLogin">
                     <v-text-field
                         autocomplete="off"
@@ -55,9 +55,9 @@
         </v-row>
         
         <v-row justify="center">
-            <v-col class="col-6">
+            <v-col class="col-4">
                 <v-img
-                    style="cursor: pointer;"
+                    style="cursor: pointer"
                     lazy-src="/google.png"
                     max-height="35"
                     max-width="180"
@@ -89,12 +89,11 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-import { required, minLength, email } from 'vuelidate/lib/validators';
+import { validationMixin } from 'vuelidate'
+import { required, minLength, email } from 'vuelidate/lib/validators'
 
 export default {
     mixins: [validationMixin],
-
     validations: {
       login: {
         password: { required, minLength: minLength(8) },
@@ -116,56 +115,54 @@ export default {
     },
     computed: {
         isFormValid() {
-            return !this.$v.$invalid;
-        }
+            return !this.$v.$invalid
+        },
     },
-    mounted() { 
-        this.$nuxt.$emit('isPageLoading', false);
+    mounted() {
+        this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+
     },
     methods: {
         formLogin() {
-            this.$nuxt.$emit('isPageLoading', true);
+            if( !this.isFormValid ) return
+            this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
 
-            if( !this.isFormValid ) return;
-            this.$auth.loginWith('laravelJWT', {
-                data: this.login, 
-            })
+            this.$auth.loginWith('laravelJWT', { data: this.login })
             .then((response) => {
                 if( response.data.access_token ) {
-                    this.$nuxt.$emit('isPageLoading', false);
-                    this.$router.push('/newsfeed');
+                    this.$router.push({ name: 'newsfeed' })
                 }
             })
             .catch((e) => {
-                this.$nuxt.$emit('isPageLoading', false);
-
                 if( e.response.status == 401 ) {
-                    this.errorMessage = 'The password you entered is incorrect.';
-                    this.errorSnackbar = true;
+                    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
 
-                    this.login.password = '';
-                    this.$v.login.password.$touch();
+                    this.errorMessage = 'The password you entered is incorrect.'
+                    this.errorSnackbar = true
+
+                    this.login.password = ''
+                    this.$v.login.password.$touch()
                 }else {
-                    console.log('Something went wrong.');
+                    console.log('Something went wrong.')
                 }
-            });
+            })
         },
-        async loginWithGoogle() {
-            await this.$auth.loginWith('google');
+        loginWithGoogle() {
+            this.$auth.loginWith('google')
         },
         passwordErrors (errors = []) {
-            if (!this.$v.login.password.$dirty) return errors;
-            !this.$v.login.password.minLength && errors.push('Password should be at least 8 characters long.');
-            !this.$v.login.password.required && errors.push('Password is required.');
+            if (!this.$v.login.password.$dirty) return errors
+            !this.$v.login.password.minLength && errors.push('Password should be at least 8 characters long.')
+            !this.$v.login.password.required && errors.push('Password is required.')
 
-            return errors;
+            return errors
         },
         emailErrors (errors = []) {
-            if (!this.$v.login.email.$dirty) return errors;
-            !this.$v.login.email.email && errors.push('Must be valid e-mail');
-            !this.$v.login.email.required && errors.push('E-mail is required');
+            if (!this.$v.login.email.$dirty) return errors
+            !this.$v.login.email.email && errors.push('Must be valid e-mail')
+            !this.$v.login.email.required && errors.push('E-mail is required')
 
-            return errors;
+            return errors
         },
     }//methods
 }

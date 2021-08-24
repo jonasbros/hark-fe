@@ -33,6 +33,9 @@ export default {
     return {
       title
     }
+  },
+  mounted() {
+    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
   }
 }
 </script>

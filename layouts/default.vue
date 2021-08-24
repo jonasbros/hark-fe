@@ -34,7 +34,11 @@
       </v-container>
     </v-main>
 
-    <v-overlay :value="overlay">
+    <v-overlay 
+      opacity="1"
+      color="#0e0e0e" 
+      :value="isPageLoading"
+    >
       <v-progress-circular
         indeterminate
         size="64"
@@ -44,6 +48,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   data () {
     return {
@@ -51,18 +57,13 @@ export default {
       drawer: false,
       fixed: false,
       title: 'HARK',
-      overlay: false,
     }
   },
-  created() {
-    this.$nuxt.$on('isPageLoading', (isPageLoading) => {
-      this.overlay = isPageLoading;
-    });
+  computed: {
+    ...mapState(['isPageLoading'])
+  },
+  mounted() {
+    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
   }
-
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

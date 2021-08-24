@@ -67,7 +67,11 @@
               <v-list-item
                 @click="() => {}"
               >
-                <v-list-item-title>Profile</v-list-item-title>
+                <v-list-item-title>
+                  <NuxtLink :to="{ name: 'user-url', params: { url: $auth.user.custom_url } }">
+                    Profile
+                  </NuxtLink>
+                </v-list-item-title>
               </v-list-item>
 
               <v-list-item
@@ -110,7 +114,11 @@
 
     </v-main>
 
-    <v-overlay :value="overlay">
+    <v-overlay 
+      opacity="1"
+      color="#0e0e0e" 
+      :value="isPageLoading"
+    >
       <v-progress-circular
         indeterminate
         size="64"
@@ -120,35 +128,33 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
     middleware: 'auth',
-    data() {
-        return {
-            overlay: false,
-        }
+    computed: {
+      ...mapState(['isPageLoading'])
     },
-    mounted() {
-        console.log(this.$auth);
+    created() {
+   
+      if( this.$auth.strategy.name == 'google' && !this.$auth.user.custom_url ) {
+        this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
+        this.saveGoogleUserToDB();
+      }
 
-        if( this.$auth.strategy.name == 'laravelJWT' ) {
-            this.overlay = true;
-            this.saveGoogleUserToDB();
-        }
-
-        if( this.$auth.strategy.name == 'laravelJWT' ) {
-          this.overlay = false;
-        }
+      if( this.$auth.strategy.name == 'laravelJWT' ) {
+          this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+      }
     },
     methods: {
       logout() {
-        this.overlay = true;
+        this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
         this.$auth.logout();
       },
       saveGoogleUserToDB() {
             const token = this.$auth.strategy.token.get();
             const userInfo = {...this.$auth.user, token};
 
-            console.log(this.$auth);
             this.$axios
             .post('/api/loginWithGoogle', userInfo)
             .then(response => {
@@ -164,7 +170,7 @@ export default {
             .post('/api/megoogle', { access_token: access_token })
             .then(response => {
                 if( response.data ) {
-                    this.overlay = false;
+                    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
                     this.$auth.setUser(response.data);
                 }else {
                     this.info = response.data.message;
