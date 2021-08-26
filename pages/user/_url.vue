@@ -14,27 +14,27 @@ export default {
         user: null,
       }
     },
-    async asyncData({ app, params, $auth, store }) {
-      store.dispatch('UPDATE_IS_PAGE_LOADING', true)
+    computed: {
+      userIsMe() {
+        const url = this.$route.params.url
+        return url == this.$auth.user.custom_url
+      }
+    },
+    async fetch() {
+      this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
 
-      const url = params.url
-      let user = null;
 
-      if( url != $auth.user.custom_url ) {
-        user = await store.dispatch('user/FETCH_USER', url)
+      if( this.userIsMe ) {
+          this.user = this.$auth.user
       }else {
-        user = $auth.user
+        this.user = await this.$store.dispatch('user/FETCH_USER', url)
+
+        if( this.user == 404 ) {
+          this.$nuxt.error({ message: 'User Not Found', statusCode: 404 })
+        }
       }
       
-      store.dispatch('UPDATE_IS_PAGE_LOADING', false)
-
-      return { user }
-    },
-    created () {
-
-      if( this.user == 404 ) {
-        this.$nuxt.error({ message: 'Hello', statusCode: 404 })
-      }
+      this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
     },
 }
 </script>

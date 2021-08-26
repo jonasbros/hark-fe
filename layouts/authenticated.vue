@@ -136,47 +136,18 @@ export default {
       ...mapState(['isPageLoading'])
     },
     created() {
-   
-      if( this.$auth.strategy.name == 'google' && !this.$auth.user.custom_url ) {
-        this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
-        this.saveGoogleUserToDB();
-      }
+      this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
 
-      if( this.$auth.strategy.name == 'laravelJWT' ) {
-          this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+      if( this.$auth.loggedIn && !this.$auth.user.custom_url ) {
+        this.logout()
       }
     },
     methods: {
       logout() {
         this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
-        this.$auth.logout();
-      },
-      saveGoogleUserToDB() {
-            const token = this.$auth.strategy.token.get();
-            const userInfo = {...this.$auth.user, token};
 
-            this.$axios
-            .post('/api/loginWithGoogle', userInfo)
-            .then(response => {
-                if( response.data.status == 'success' ) {
-                    this.getLoginGoogleUser(token);
-                }else {
-                    this.info = response.data.message;
-                }
-            });
-        },
-        getLoginGoogleUser(access_token) {
-            this.$axios
-            .post('/api/megoogle', { access_token: access_token })
-            .then(response => {
-                if( response.data ) {
-                    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
-                    this.$auth.setUser(response.data);
-                }else {
-                    this.info = response.data.message;
-                }
-            });
-        },
+        this.$auth.logout()
+      },
     }
 }
 </script>

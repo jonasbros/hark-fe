@@ -1,6 +1,10 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+  env: {
+    loginGoogleEndpoint: '/api/loginWithGoogle',
+    loginGoogleUserInfoEndpoint: '/api/megoogle'
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - hark-fe',
@@ -47,8 +51,9 @@ export default {
 
   auth: {
     redirect: {
-      home: '/newsfeed',
-      logout: '/login'
+      home: '/loggingin',
+      logout: '/',
+
     },
     strategies: {
       'laravelJWT': {

@@ -62,7 +62,7 @@ export default {
   computed: {
     ...mapState(['isPageLoading'])
   },
-  mounted() {
+  created() {
     this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
   }
 }

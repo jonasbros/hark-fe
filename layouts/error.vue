@@ -1,11 +1,11 @@
 <template>
   <v-app dark>
-    <h1 v-if="error.statusCode === 404">
+    <h1>
       {{ pageNotFound }}
     </h1>
-    <h1 v-else>
-      {{ otherError }}
-    </h1>
+    <h2>
+      {{ errorMessage }}
+    </h2>
     <NuxtLink to="/">
       Home page
     </NuxtLink>
@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  layout: 'empty',
+  layout: 'default',
   props: {
     error: {
       type: Object,
@@ -23,8 +23,8 @@ export default {
   },
   data () {
     return {
-      pageNotFound: '404 Not Found',
-      otherError: 'An error occurred'
+      pageNotFound: this.error.statusCode,
+      errorMessage: this.error.message
     }
   },
   head () {
@@ -34,9 +34,13 @@ export default {
       title
     }
   },
-  mounted() {
+  created() {
+    if( this.$auth.loggedIn ) {
+      this.$nuxt.setLayout('authenticated')
+    }
     this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
-  }
+
+  },
 }
 </script>
 

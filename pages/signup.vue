@@ -67,14 +67,7 @@
         
         <v-row justify="center">
             <v-col class="col-6">
-                <v-img
-                    style="cursor: pointer"
-                    lazy-src="/google.png"
-                    max-height="35"
-                    max-width="180"
-                    src="/google.png"
-                    @click="loginWithGoogle"
-                ></v-img>
+                <LoginGoogleButton/>
             </v-col>
 
         </v-row>
@@ -131,14 +124,6 @@ export default {
             return !this.$v.$invalid
         }
     },
-    mounted() {      
-        this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
-  
-        if( this.$auth.loggedIn && this.$auth.strategy.name == 'google' && this.$auth.strategy.token.get() ) {
-            this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
-            this.saveUserToDB()
-        }
-    },
     methods: {
         createUser() {
             this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
@@ -161,35 +146,7 @@ export default {
                 this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
             })
         },
-        loginWithGoogle() {
-            this.$auth.loginWith('google')
-        },
-        saveUserToDB() {
-            const token = this.$auth.strategy.token.get()
-            const userInfo = {...this.$auth.user, token}
 
-            this.$axios
-            .post('/api/loginWithGoogle', userInfo)
-            .then(response => {
-                if( response.data.status == 'success' ) {
-                    this.googleLoginGetUser(token)
-                }else {
-                    this.info = response.data.message
-                }
-            })
-        },
-        googleLoginGetUser(access_token) {
-            this.$axios
-            .post('/api/megoogle', { access_token: access_token })
-            .then(response => {
-                if( response.data ) {
-                    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
-                    this.$router.push({ name: 'newsfeed' })
-                }else {
-                    this.info = response.data.message
-                }
-            })
-        },
         nameErrors (errors = []) {
             if (!this.$v.signup.name.$dirty) return errors
             !this.$v.signup.name.required && errors.push('Name is required.')

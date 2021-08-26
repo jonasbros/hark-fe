@@ -7,13 +7,13 @@
         </v-row>
         
         <v-row justify="center">
-            <v-col class="col-4">
+            <v-col class="col-6">
                 <h1>LOG IN</h1>
             </v-col>
         </v-row>
 
         <v-row justify="center">
-            <v-col class="col-4">
+            <v-col class="col-6">
                 <form autocomplete="off" @submit.prevent="formLogin">
                     <v-text-field
                         autocomplete="off"
@@ -55,17 +55,9 @@
         </v-row>
         
         <v-row justify="center">
-            <v-col class="col-4">
-                <v-img
-                    style="cursor: pointer"
-                    lazy-src="/google.png"
-                    max-height="35"
-                    max-width="180"
-                    src="/google.png"
-                    @click="loginWithGoogle"
-                ></v-img>
+            <v-col class="col-6">
+                <LoginGoogleButton/>
             </v-col>
-
         </v-row>
 
         <v-snackbar
@@ -118,13 +110,10 @@ export default {
             return !this.$v.$invalid
         },
     },
-    mounted() {
-        this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
-
-    },
     methods: {
         formLogin() {
             if( !this.isFormValid ) return
+            
             this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
 
             this.$auth.loginWith('laravelJWT', { data: this.login })
@@ -142,14 +131,16 @@ export default {
 
                     this.login.password = ''
                     this.$v.login.password.$touch()
-                }else {
-                    console.log('Something went wrong.')
+                }
+                
+                if( e.response.status >= 500 ){
+                    console.log('Network error.')
+                    this.$nuxt.error({ message: 'Network Error', statusCode: e.response.status })
+
                 }
             })
         },
-        loginWithGoogle() {
-            this.$auth.loginWith('google')
-        },
+        
         passwordErrors (errors = []) {
             if (!this.$v.login.password.$dirty) return errors
             !this.$v.login.password.minLength && errors.push('Password should be at least 8 characters long.')
@@ -157,6 +148,7 @@ export default {
 
             return errors
         },
+
         emailErrors (errors = []) {
             if (!this.$v.login.email.$dirty) return errors
             !this.$v.login.email.email && errors.push('Must be valid e-mail')
