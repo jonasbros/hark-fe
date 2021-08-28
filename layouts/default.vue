@@ -15,13 +15,13 @@
       </v-toolbar-title>
       <v-spacer />
       <NuxtLink
-        class="mr-4 font-weight-bold"
+        class="mr-4 font-weight-bold white--text"
         to="/signup"
       >
         Sign Up
       </NuxtLink>
       <NuxtLink 
-        class="mr-6 font-weight-bold"
+        class="mr-6 font-weight-bold white--text"
         to="/login"
       >
         Log In
