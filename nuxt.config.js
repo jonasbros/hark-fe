@@ -1,6 +1,10 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+  env: {
+    loginGoogleEndpoint: '/api/loginWithGoogle',
+    loginGoogleUserInfoEndpoint: '/api/megoogle'
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - hark-fe',
@@ -18,7 +22,6 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
-
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     '~/assets/scss/main.scss'
@@ -27,6 +30,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '~/plugins/fontawesome.js', mode: 'client' },
+    { src: '~/plugins/router-guards.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -46,14 +50,18 @@ export default {
   ],
 
   auth: {
-    redirect: false,
+    redirect: {
+      home: '/loggingin',
+      logout: '/',
+
+    },
     strategies: {
       'laravelJWT': {
         provider: 'laravel/jwt',
         url: '/api',
         endpoints: {
           login: { url: '/login', method: 'post' },
-          logout: { url: '/logout', method: 'post' },
+          logout: { url: '/logout', method: 'get' },
           user: { url: '/me', method: 'post' },
         },
         token: {

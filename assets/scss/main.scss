@@ -10,12 +10,22 @@
 }
 
 .v-application a {
+    color: $hark-grey;
+}
+
+.v-toolbar__title a {
     color: $hark-primary;
 }
 
+.v-list-item {
+    &:hover {
+        a {
+            color: $hark-primary;
+        }
+    }
+}
 
 .v-application .primary {
-    background-color: $hark-primary !important;
     border-color: $hark-primary !important;
     color: $hark-dark-blue !important; 
 }

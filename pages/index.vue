@@ -73,12 +73,3 @@
     </v-col>
   </v-row>
 </template>
-
-<script>
-export default {
-  // middleware: 'auth',
-  mounted() {
-    console.log(this.$auth);
-  }
-}
-</script>
