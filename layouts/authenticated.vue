@@ -88,6 +88,24 @@
             </v-list>
           </v-menu>
         </div>
+
+        <v-snackbar
+            color="error"
+            v-model="isOffline"
+        >
+        You are offline.
+
+        <template v-slot:action="{ attrs }">
+            <v-btn
+            color="accent"
+            text
+            v-bind="attrs"
+            @click="isOffline = false"
+            >
+            Close
+            </v-btn>
+        </template>
+        </v-snackbar>
       </div>
     </v-app-bar>
 
@@ -133,6 +151,9 @@ import { mapState } from 'vuex';
 export default {
     middleware: 'auth',
     computed: {
+      isOffline() {
+        return this.$nuxt.isOffline;
+      },
       ...mapState(['isPageLoading'])
     },
     created() {
