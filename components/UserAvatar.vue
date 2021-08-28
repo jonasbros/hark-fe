@@ -3,7 +3,7 @@
         <v-avatar 
             v-if="user.profile_picture"
             class="profile"
-            color="grey"
+            color="accent"
             :size="size"
         >
             <v-img :src="user.profile_picture"></v-img>
@@ -11,14 +11,11 @@
 
         <v-avatar 
             v-else
-            color="primary"
+            color="accent"
             :size="size"
         >
-            <v-icon
-                dark
-                :size="size"
-            >
-            mdi-account-circle
+            <v-icon dark :size="size">
+                mdi-account-circle
             </v-icon>
         </v-avatar>
     </div>         
@@ -31,10 +28,6 @@ export default {
             type: Object,
             required: true
         },
-        url: {
-            type: String,
-            required: true
-        },
         size: {
             type: String,
             default: 64
@@ -43,6 +36,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+    .v-application .primary {
+        color: $hark-white;
+    }
 </style>

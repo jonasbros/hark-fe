@@ -39,6 +39,10 @@ export default {
 <style lang="scss">
 #hark-profile__cover {
   overflow: inherit;
+
+  .v-image__image {
+    border-radius: 5px;
+  }
 }
 
 #hark-profile__avatar {
@@ -53,4 +57,5 @@ export default {
   height: 240px;
   width: 100%;
 }
+
 </style>

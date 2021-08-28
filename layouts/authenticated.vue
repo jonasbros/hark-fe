@@ -3,12 +3,12 @@
     <v-app-bar
       fixed
       app
-      color="#0e0e0e"
+      color="hark_black"
       class="hark-navbar text-uppercase"
     >
       <v-toolbar-title 
         class="ml-6 font-weight-bold"
-        color="#00FF78"
+        color="primary"
         to="/"
       >
         <NuxtLink to="/newsfeed">HARK</NuxtLink>
@@ -184,10 +184,11 @@ export default {
   }
 
   .hark-center {
-    border-left: 1px solid $hark-grey;
-    border-right: 1px solid $hark-grey;
+    border-left: 1px solid $hark-black;
+    border-right: 1px solid $hark-black;
     min-height: calc(100vh - 64px);
     padding: 0 !important;
+    background-color: $hark-black;
   }
 
   .hark-sidebar__left, .hark-sidebar__right {

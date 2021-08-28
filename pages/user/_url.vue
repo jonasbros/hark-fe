@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col class="col-12">
+    <v-col class="col-12 pt-6">
       <UserProfileHeader :user="user"/>
     </v-col>
   </v-row>
