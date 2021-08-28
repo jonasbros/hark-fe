@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col class="col-6">
+    <v-col class="col-12">
       <UserProfileHeader :user="user"/>
     </v-col>
   </v-row>
@@ -34,6 +34,7 @@ export default {
         }
       }
       
+      console.log(this.user);
       this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
     },
 }

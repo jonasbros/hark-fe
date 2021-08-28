@@ -6,12 +6,7 @@
 }
 
 .theme--dark.v-application {
-    background: $hark-black !important;
-}
-
-<<<<<<< Updated upstream
-.v-application a {
-    color: $hark-grey;
+    background: $hark-dark-grey !important;
 }
 
 .v-toolbar__title a {
@@ -25,8 +20,6 @@
         }
     }
 }
-=======
->>>>>>> Stashed changes
 
 .v-application .primary {
     border-color: $hark-primary !important;

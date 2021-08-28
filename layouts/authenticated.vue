@@ -52,25 +52,21 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                <v-avatar 
-                  color="primary"
-                  size="36"
-                >
-                  <v-icon dark>
-                    mdi-account-circle
-                  </v-icon>
-                </v-avatar> 
+                <UserAvatar 
+                  :user="$auth.user"
+                  size="34" 
+                />
+
               </v-btn>
             </template>
 
             <v-list>
               <v-list-item
+                :to="{ name: 'user-url', params: { url: $auth.user.custom_url } }"
                 @click="() => {}"
               >
                 <v-list-item-title>
-                  <NuxtLink :to="{ name: 'user-url', params: { url: $auth.user.custom_url } }">
-                    Profile
-                  </NuxtLink>
+                  Profile
                 </v-list-item-title>
               </v-list-item>
 
@@ -117,7 +113,7 @@
           </v-container>
         </v-col>
         
-        <v-col class="col-6">
+        <v-col class="hark-center col-6">
           <v-container>
             <Nuxt/>
           </v-container>
@@ -187,6 +183,13 @@ export default {
     margin-top: 0;
   }
 
+  .hark-center {
+    border-left: 1px solid $hark-grey;
+    border-right: 1px solid $hark-grey;
+    min-height: calc(100vh - 64px);
+    padding: 0 !important;
+  }
+
   .hark-sidebar__left, .hark-sidebar__right {
     position: fixed;
   }
@@ -198,4 +201,6 @@ export default {
   .hark-sidebar__right {
     right: 0;
   }
+
+  
 </style>
