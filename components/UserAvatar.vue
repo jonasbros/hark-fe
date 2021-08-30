@@ -3,7 +3,7 @@
         <v-avatar 
             v-if="user.profile_picture"
             class="profile"
-            color="accent"
+            color="hark_black"
             :size="size"
         >
             <v-img :src="user.profile_picture"></v-img>
@@ -11,10 +11,14 @@
 
         <v-avatar 
             v-else
-            color="accent"
+            color="hark_black"
             :size="size"
         >
-            <v-icon dark :size="size">
+            <v-icon 
+                dark 
+                :size="size"
+                color="primary"
+            >
                 mdi-account-circle
             </v-icon>
         </v-avatar>

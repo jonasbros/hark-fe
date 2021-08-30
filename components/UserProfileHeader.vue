@@ -4,7 +4,7 @@
           id="hark-profile__cover"
           max-height="240"
           max-width="100%"
-          src="/images/hark_default_cover.png"
+          src="/images/hark_default_cover_white.png"
         >
 
           <UserAvatar
@@ -21,9 +21,7 @@
             <p id="profile__bio">{{ user.bio }}</p>
           </div>
 
-          <nav>
-            u
-          </nav>
+          <UserProfileNavMenu :user="user"/>
         </div>
 
       </div>
