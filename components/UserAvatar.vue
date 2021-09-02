@@ -11,16 +11,15 @@
 
         <v-avatar 
             v-else
-            color="hark_black"
+            color="primary"
             :size="size"
         >
-            <v-icon 
-                dark 
-                :size="size"
-                color="primary"
-            >
-                mdi-account-circle
-            </v-icon>
+            <v-img
+                :src="`https://avatars.dicebear.com/api/croodles-neutral/${user.display_name}.svg`" 
+                :alt="user.display_name"
+                v-bind:class="{'avatar-border-in-profile': inProfile}"
+             ></v-img>
+
         </v-avatar>
     </div>         
 </template>
@@ -35,6 +34,11 @@ export default {
         size: {
             type: String,
             default: 64
+        },
+        inProfile: {
+            type: Boolean,
+            default: false,
+            required: false
         }
     }
 }
@@ -43,5 +47,9 @@ export default {
 <style lang="scss" scoped>
     .v-application .primary {
         color: $hark-white;
+    }
+
+    .avatar-border-in-profile {
+        border: 8px solid $hark-black;
     }
 </style>

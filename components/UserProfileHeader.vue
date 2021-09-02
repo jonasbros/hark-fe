@@ -11,6 +11,7 @@
             id="hark-profile__avatar"
             size="164"
             :user="user"
+            :inProfile="true"
           />
 
         </v-img><!-- hark-profile__cover -->
