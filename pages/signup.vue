@@ -22,7 +22,6 @@
                         label="Name"
                         required
                         @enter="createUser"                    
-                        @input="$v.signup.name.$touch()"
                         @blur="$v.signup.name.$touch()"
                     ></v-text-field>
 
@@ -33,7 +32,6 @@
                         label="E-mail"
                         required
                         @enter="createUser"
-                        @input="$v.signup.email.$touch()"
                         @blur="$v.signup.email.$touch()"
                     ></v-text-field>
 
@@ -48,7 +46,6 @@
                         counter
                         @enter="createUser"
                         @click:append="showpass = !showpass"
-                        @input="$v.signup.password.$touch()"
                         @blur="$v.signup.password.$touch()"                
                     ></v-text-field>
 

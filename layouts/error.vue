@@ -9,10 +9,23 @@
     <NuxtLink to="/">
       Home page
     </NuxtLink>
+
+    <v-overlay 
+      opacity="1"
+      color="hark_black" 
+      :value="isPageLoading"
+    >
+      <v-progress-circular
+          indeterminate
+          size="64"
+      ></v-progress-circular>
+    </v-overlay>
   </v-app>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   layout: 'default',
   props: {
@@ -21,18 +34,21 @@ export default {
       default: null
     }
   },
-  data () {
-    return {
-      pageNotFound: this.error.statusCode,
-      errorMessage: this.error.message
-    }
-  },
   head () {
     const title =
       this.error.statusCode === 404 ? this.pageNotFound : this.otherError
     return {
       title
     }
+  },
+  data () {
+    return {
+      pageNotFound: this.error.statusCode,
+      errorMessage: this.error.message
+    }
+  },
+  computed: {
+    ...mapState(['isPageLoading'])
   },
   created() {
     if( this.$auth.loggedIn ) {

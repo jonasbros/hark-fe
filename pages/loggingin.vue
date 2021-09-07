@@ -1,3 +1,7 @@
+<template>
+    
+</template>
+
 <script>
 export default {
     computed: {
@@ -13,21 +17,28 @@ export default {
     },
     methods: {
         async saveUserToDB() {
-            const userInfo = {...this.$auth.user, token: this.accessToken}
+            const userInfo = {...this.$auth.user, password: this.$auth.user.sub , token: this.accessToken}
+            try {
+                let response = await this.$axios.post(process.env.loginGoogleEndpoint, userInfo)
 
-            let response = await this.$axios.post(process.env.loginGoogleEndpoint, userInfo)
+                let newToken = await response.data.access_token
+                if( newToken ) {
+                    this.$auth.strategy.token.set(newToken);
+                    this.getLoginGoogleUser();
+                }
+            }catch(e) {
+                this.$nuxt.error({ message: e })
+            }
 
-            let status = response.data.status
 
             if( status == 'success' ) {
                 this.getLoginGoogleUser();
             }else {
-                this.$nuxt.error({ message: response.data.message })
             }
 
         },
         async getLoginGoogleUser() {
-            let user = await this.$axios.post(process.env.loginGoogleUserInfoEndpoint, { access_token: this.accessToken })
+            let user = await this.$axios.post(process.env.loginGoogleUserInfoEndpoint)
 
             if( user.data.custom_url ) {
                 this.$auth.setUser(user.data)

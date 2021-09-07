@@ -3,12 +3,12 @@
     <v-app-bar
       fixed
       app
-      color="#0e0e0e"
+      color="hark_black"
       class="text-uppercase"
     >
       <v-toolbar-title 
         class="ml-6 font-weight-bold"
-        color="#00FF78"
+        color="primary"
         to="/"
       >
         <NuxtLink to="/">HARK</NuxtLink>
@@ -36,7 +36,7 @@
 
     <v-overlay 
       opacity="1"
-      color="#0e0e0e" 
+      color="hark_black" 
       :value="isPageLoading"
     >
       <v-progress-circular
