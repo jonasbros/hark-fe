@@ -3,7 +3,7 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   env: {
     loginGoogleEndpoint: '/api/loginWithGoogle',
-    loginGoogleUserInfoEndpoint: '/api/megoogle'
+    loginGoogleUserInfoEndpoint: '/api/me'
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -53,7 +53,6 @@ export default {
     redirect: {
       home: '/loggingin',
       logout: '/',
-
     },
     strategies: {
       'laravelJWT': {

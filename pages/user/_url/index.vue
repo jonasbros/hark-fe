@@ -8,7 +8,23 @@
 export default {
     layout: 'userprofile',
     data() {
-      return {}
+      return {
+        posts: []
+      }
+    },
+    computed: {
+      url() {
+        return this.$route.params.url
+      }
+    },
+    async fetch() {
+      this.getPosts()
+    },
+    methods: {
+      async getPosts() {
+        let posts = await this.$axios.get(`/api/getposts/${this.url}`)
+        console.log(await posts);
+      }
     }
 }
 </script>

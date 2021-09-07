@@ -27,11 +27,24 @@
             </v-row>
 
         </v-main>
+
+        <v-overlay 
+          opacity="1"
+          color="hark_black" 
+          :value="isPageLoading"
+        >
+          <v-progress-circular
+              indeterminate
+              size="64"
+          ></v-progress-circular>
+        </v-overlay>
     </v-app>
 
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
     middleware: 'auth',
     data() {
@@ -46,12 +59,15 @@ export default {
       },
       userUrl() {
         return (this.userIsMe ? this.$auth.user.custom_url : this.$route.params.url)
-      }
-
+      },
+      ...mapState(['isPageLoading'])
     },
-    async fetch() {
+    
+    created() {
       this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
+    },
 
+    async fetch() {
       if( this.userIsMe ) {
           this.user = this.$auth.user
       }else {

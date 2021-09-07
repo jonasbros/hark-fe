@@ -4,7 +4,7 @@
           id="hark-profile__cover"
           max-height="240"
           max-width="100%"
-          src="/images/hark_default_cover_white.png"
+          :src="( user.cover_picture ? user.cover_picture : '/images/hark_default_cover_white.png' )"
         >
 
           <UserAvatar

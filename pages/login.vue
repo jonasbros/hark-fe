@@ -22,7 +22,6 @@
                         label="E-mail"
                         required
                         @enter="formLogin"
-                        @input="$v.login.email.$touch()"
                         @blur="$v.login.email.$touch()"
                     ></v-text-field>
 
@@ -37,7 +36,6 @@
                         counter
                         @enter="formLogin"
                         @click:append="showpass = !showpass"
-                        @input="$v.login.password.$touch()"
                         @blur="$v.login.password.$touch()"                
                     ></v-text-field>
 

@@ -6,7 +6,10 @@
             color="hark_black"
             :size="size"
         >
-            <v-img :src="user.profile_picture"></v-img>
+            <v-img 
+                v-bind:class="{'avatar-border-in-profile': inProfile}"
+                :src="user.profile_picture"
+            ></v-img>
         </v-avatar>
 
         <v-avatar 
@@ -17,7 +20,7 @@
             <v-img
                 :src="`https://avatars.dicebear.com/api/croodles-neutral/${user.display_name}.svg`" 
                 :alt="user.display_name"
-                v-bind:class="{'avatar-border-in-profile': inProfile}"
+                v-bind:class="{'avatar-border-in-profile-thick': inProfile}"
              ></v-img>
 
         </v-avatar>
@@ -28,7 +31,7 @@
 export default {
     props: {
         user: {
-            type: Object,
+            type: Object | Boolean,
             required: true
         },
         size: {
@@ -50,6 +53,10 @@ export default {
     }
 
     .avatar-border-in-profile {
+        border: 5px solid $hark-black;
+    }
+
+    .avatar-border-in-profile-thick {
         border: 8px solid $hark-black;
     }
 </style>

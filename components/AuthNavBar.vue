@@ -102,30 +102,16 @@
                 </template>
             </v-snackbar>
         </div>
-
-        <v-overlay 
-            opacity="1"
-            color="#0e0e0e" 
-            :value="isPageLoading"
-        >
-            <v-progress-circular
-                indeterminate
-                size="64"
-            ></v-progress-circular>
-        </v-overlay>
 </v-app-bar>
 
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 export default {
     computed: {
         isOffline() {
             return this.$nuxt.isOffline;
         },
-        ...mapState(['isPageLoading'])
     },
     created() {
       this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
