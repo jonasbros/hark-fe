@@ -3,7 +3,8 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   env: {
     loginGoogleEndpoint: '/api/loginWithGoogle',
-    loginGoogleUserInfoEndpoint: '/api/me'
+    loginGoogleUserInfoEndpoint: '/api/me',
+    postsPerPage: 5,
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -34,7 +35,15 @@ export default {
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
+  components:  {
+    dirs: [
+      '~/components',
+      '~/components/post',
+      '~/components/user',
+      '~/components/auth'
+
+    ]
+  },
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [

@@ -23,28 +23,21 @@ export default {
 
                 let newToken = await response.data.access_token
                 if( newToken ) {
-                    this.$auth.strategy.token.set(newToken);
+                    this.$auth.strategy.token.set(newToken)
                     this.getLoginGoogleUser();
                 }
             }catch(e) {
                 this.$nuxt.error({ message: e })
             }
 
-
-            if( status == 'success' ) {
-                this.getLoginGoogleUser();
-            }else {
-            }
-
         },
         async getLoginGoogleUser() {
-            let user = await this.$axios.post(process.env.loginGoogleUserInfoEndpoint)
-
-            if( user.data.custom_url ) {
-                this.$auth.setUser(user.data)
+            try{
+                let user = await this.$axios.post(process.env.loginGoogleUserInfoEndpoint)
+                this.$auth.setUser(await user.data)
                 this.$router.push({ name: 'newsfeed' })
-            }else {
-                this.$nuxt.error({ message: response.data.message })
+            }catch(e) {
+                this.$nuxt.error({ message: e })
             }
         },
     }

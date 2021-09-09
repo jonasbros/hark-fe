@@ -5,8 +5,8 @@
     list-style: none;
 }
 
-.theme--dark.v-application {
-    background: $hark-dark-grey !important;
+.theme--dark.v-application, html {
+    background: $hark-black !important;
 }
 
 .v-toolbar__title a {
@@ -24,4 +24,9 @@
 .v-application .primary {
     border-color: $hark-primary !important;
     color: $hark-dark-blue !important; 
+}
+
+.hark-center {
+    min-height: calc(100vh - 64px);
+    padding: 0 !important;
 }
