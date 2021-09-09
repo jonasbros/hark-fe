@@ -133,6 +133,7 @@ export default {
                 
                 if( e.response.status >= 500 ){
                     console.log('Network error.')
+                    this.$router.push('/error')
                     this.$nuxt.error({ message: 'Network Error', statusCode: e.response.status })
 
                 }

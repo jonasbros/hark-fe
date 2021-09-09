@@ -48,12 +48,5 @@ export default {
 </script>
 
 <style lang="scss">
-  .hark-center {
-    border-left: 1px solid $hark-black;
-    border-right: 1px solid $hark-black;
-    min-height: calc(100vh - 64px);
-    padding: 0 !important;
-    background-color: $hark-black;
-  }
-  
+
 </style>

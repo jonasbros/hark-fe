@@ -5,13 +5,14 @@
         class="hark-navbar text-uppercase"
     >
         <v-btn 
-        text
-        plain
-        nuxt
-        color="secondary"
-        v-for="(item, i) in menuItems"
-        :key="item.name + i"
-        :to="{ name: item.urlName, params: { url: userId } }"
+            text
+            plain
+            nuxt
+            :ripple="false"
+            color="secondary"
+            v-for="(item, i) in menuItems"
+            :key="item.name + i"
+            :to="{ name: item.urlName, params: { url: userId } }"
         >
         {{ item.name }}
         </v-btn>
@@ -19,9 +20,11 @@
         <v-spacer></v-spacer>
 
         <v-btn 
+            v-if="userisme"
             text
             plain
             nuxt
+            :ripple="false"
             color="secondary"
             v-for="(item, i) in menuItems2"
             :key="item.name + i"
@@ -37,6 +40,10 @@ export default {
     props: {
         user: {
             type: Object,
+            required: true
+        },
+        userisme: {
+            type: Boolean,
             required: true
         }
     },
@@ -70,11 +77,12 @@ export default {
                     urlName: 'user-url-editprofile'
                 },
             ],
-            userId: null,
         }
     },
-    created() {
-        this.userId = this.user.custom_url
+    computed: {
+        userId() {
+            return (this.user ? this.user.custom_url : null)
+        }       
     }
 
 }

@@ -8,22 +8,26 @@
                 <LeftSidebar/>
                 
                 <v-col class="hark-center col-6">
-                <v-container>
-                    <v-row>
-                        <v-col class="col-12 pt-6">
-                            <UserProfileHeader v-if="user" :user="user"/>
-                        </v-col>
-                    </v-row>
+                  <v-container>
+                      <v-row>
+                          <v-col class="col-12 pt-6">
+                              <UserProfileHeader
+                                v-if="user"
+                                :user="user"
+                                :userisme="userIsMe"
+                              />
+                          </v-col>
+                      </v-row>
 
-                    <v-row>
-                        <v-col class="col-12 pt-6">
-                            <Nuxt/>
-                        </v-col>
-                    </v-row>
-                </v-container>
+                      <v-row>
+                          <v-col class="col-12 pt-6">
+                              <Nuxt :userisme="userIsMe"/>
+                          </v-col>
+                      </v-row>
+                  </v-container>
                 </v-col>
 
-                <RightSidebar/>
+                <RightSidebar />
             </v-row>
 
         </v-main>
@@ -46,19 +50,26 @@
 import { mapState } from 'vuex';
 
 export default {
-    middleware: 'auth',
     data() {
       return {
         user: null,
       }
     },
+    watch: {
+      // runs fetch() again to refresh user profile
+      '$route.params.url': function(oV, nV) {
+        this.$fetch()
+      }
+    },
     computed: {
+      customUrl() {
+        return (this.$auth.user ? this.$auth.user.custom_url : null)
+      },
       userIsMe() {
-        const url = this.$route.params.url
-        return url == this.$auth.user.custom_url
+        return this.$route.params.url == this.customUrl
       },
       userUrl() {
-        return (this.userIsMe ? this.$auth.user.custom_url : this.$route.params.url)
+        return (this.userIsMe ? this.customUrl : this.$route.params.url)
       },
       ...mapState(['isPageLoading'])
     },
@@ -66,21 +77,26 @@ export default {
     created() {
       this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
     },
-
     async fetch() {
       if( this.userIsMe ) {
           this.user = this.$auth.user
       }else {
-        this.user = await this.$store.dispatch('user/FETCH_USER', this.userUrl)
 
-        if( this.user == 404 ) {
-          this.$nuxt.error({ message: 'User Not Found', statusCode: 404 })
+        try {
+          this.user = await this.$store.dispatch('user/GET_CURRENT_PROFILE_OWNER', this.userUrl)
+        }catch(e) {
+          this.$nuxt.error({ message: e, statusCode: 404 })
         }
+
       }
       
-      console.log(this.user);
       this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
     },
+    methods: {
+      refresh() {
+        this.$fetch()
+      }
+    }
 }
 </script>
 
