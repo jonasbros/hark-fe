@@ -4,7 +4,7 @@
 
 <script>
 export default {
-    layout: 'userProfile',
+    layout: 'userprofile',
 }
 </script>
 

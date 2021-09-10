@@ -2,31 +2,9 @@
   <v-row class="justify-center">
     <v-col
       cols="8"
+      v-if="userIsMe"
     >
-      <v-btn
-        small
-        depressed
-        text
-        fab
-        :ripple="false"
-        color="transparent"
-        @click="toggleEmojiPicker()"
-      >
-        <v-icon 
-          color="secondary"
-          dark
-        >
-          mdi-emoticon-happy-outline
-        </v-icon>
-      </v-btn>
-
-      <div v-if="renderEmojiPicker">
-        <VEmojiPicker
-          v-show="showEmojiPicker"
-          @select="selectEmoji" 
-          :dark="true"  
-        />
-      </div>
+      <NewPost/>
     </v-col>
     
     <v-col 
@@ -54,17 +32,14 @@
     >
       <h3>It looks like you don't have posts yet.</h3>
     </v-col>
+
   </v-row>
 </template>
 
 <script>
-import { VEmojiPicker, emojisDefault, categoriesDefault } from 'v-emoji-picker';
 
 export default {
-    layout: 'userProfile',
-    components: {
-      VEmojiPicker,
-    },
+    layout: 'userprofile',
     data: () => ({
       posts: [],
       attrs: {
@@ -72,13 +47,17 @@ export default {
         boilerplate: true,
         elevation: 2,
       },
-      renderEmojiPicker: false,
-      showEmojiPicker: false,
     }),
     computed: {
       url() {
         return this.$route.params.url
-      }
+      },
+      customUrl() {
+        return (this.$auth.user ? this.$auth.user.custom_url : null)
+      },
+      userIsMe() {
+        return this.$route.params.url == this.customUrl
+      },
     },
     async fetch() {
       await this.getPosts()
@@ -87,12 +66,6 @@ export default {
       this.renderEmojiPicker = true
     },
     methods: {
-      toggleEmojiPicker(e) {
-        this.showEmojiPicker = !this.showEmojiPicker
-      },
-      selectEmoji(emoji) {
-        console.log(emoji)
-      },
       async getPosts() {
         let posts = await this.$axios.get(`/api/getposts/${this.url}/${process.env.postsPerPage}`)
         this.posts = await posts.data.posts
@@ -102,6 +75,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 
 </style>
