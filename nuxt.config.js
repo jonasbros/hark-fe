@@ -32,6 +32,8 @@ export default {
   plugins: [
     { src: '~/plugins/fontawesome.js', mode: 'client' },
     { src: '~/plugins/router-guards.js', mode: 'client' },
+    { src: '~/plugins/filters.js', mode: 'client' },
+
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

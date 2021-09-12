@@ -4,16 +4,16 @@
       cols="8"
       v-if="userIsMe"
     >
-      <NewPost/>
+      <NewPost @newPostAdded="insertNewPost" @newPostLoading="skeletonLoader = true"/>
     </v-col>
     
     <v-col 
-      v-if="$fetchState.pending"
+      v-if="$fetchState.pending || skeletonLoader"
       cols="8"
     >
         <v-skeleton-loader
           class='mb-6'
-          boilerplate="true"
+          :boilerplate="true"
           elevation="2"
           type="list-item-avatar, divider, list-item-three-line, card-heading, image, actions"
         ></v-skeleton-loader>
@@ -42,30 +42,45 @@
 
 export default {
     layout: 'userprofile',
+
     data: () => ({
-      posts: []
+      posts: [],
+      skeletonLoader: false,
     }),
+
     computed: {
       url() {
         return this.$route.params.url
       },
+
       customUrl() {
         return (this.$auth.user ? this.$auth.user.custom_url : null)
       },
+
       userIsMe() {
         return this.$route.params.url == this.customUrl
       },
+
       noPosts() {
         return ( this.userIsMe ? 'It looks like you don\'t have posts yet.' : 'No posts to display.')
       }
     },
+
     async fetch() {
       await this.getPosts()
     },
+
     mounted() {
       this.renderEmojiPicker = true
     },
+
     methods: {
+      insertNewPost(post) {
+        this.skeletonLoader = false
+
+        this.posts.unshift(post)
+      },
+
       async getPosts() {
         let posts = await this.$axios.get(`/api/getposts/${this.url}/${process.env.postsPerPage}`)
         this.posts = await posts.data.posts

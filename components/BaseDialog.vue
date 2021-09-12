@@ -8,7 +8,7 @@
         <template v-slot:activator="{ on, attrs }">
             <v-btn
                 id="dialog-activator"
-                class="lighten-1"
+                class="lighten-1 mb-10"
                 color="dark_grey"
                 width="100%"
                 :ripple="false"

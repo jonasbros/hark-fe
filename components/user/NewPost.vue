@@ -73,9 +73,13 @@ export default {
     methods: {
         async post() {
             if( this.postContent == '' ) return
+            this.$emit('newPostLoading')
             
             this.$axios.post(`/api/submitpost`, { postContent: this.postContent })
             .then((response) => {
+
+                this.$emit('newPostAdded', response.data.post[0])
+
                 document.querySelector('#dialog-activator').click()
                 this.postContent = ''
                 this.$refs.newPostTextarea.undirty()
