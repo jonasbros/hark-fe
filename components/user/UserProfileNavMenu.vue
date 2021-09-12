@@ -19,19 +19,21 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn 
-            v-if="userisme"
-            text
-            plain
-            nuxt
-            :ripple="false"
-            color="secondary"
-            v-for="(item, i) in menuItems2"
-            :key="item.name + i"
-            :to="{ name: item.urlName, params: { url: userId } }"
-        >
-        {{ item.name }}
-        </v-btn>
+        <div v-if="userisme">
+            <v-btn 
+                text
+                plain
+                nuxt
+                :ripple="false"
+                color="secondary"
+                v-for="(item, i) in menuItems2"
+                :key="item.name + i"
+                :to="{ name: item.urlName, params: { url: userId } }"
+            >
+                {{ item.name }}
+            </v-btn>
+        </div>
+
     </v-app-bar>
 </template>
 
@@ -42,10 +44,6 @@ export default {
             type: Object,
             required: true
         },
-        userisme: {
-            type: Boolean,
-            required: true
-        }
     },
     data(){
         return {
@@ -82,7 +80,10 @@ export default {
     computed: {
         userId() {
             return (this.user ? this.user.custom_url : null)
-        }       
+        },     
+        userisme() {
+            return (this.$auth.loggedIn ? this.$auth.user.custom_url == this.$route.params.url : false)
+        }  
     }
 
 }

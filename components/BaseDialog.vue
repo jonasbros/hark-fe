@@ -7,6 +7,7 @@
     >
         <template v-slot:activator="{ on, attrs }">
             <v-btn
+                id="dialog-activator"
                 class="lighten-1"
                 color="dark_grey"
                 width="100%"
@@ -20,7 +21,7 @@
         </template> 
 
       <v-card>
-        <v-card-title class="text-h5 secondary black--text">
+        <v-card-title class="text-h5 accent secondary--text font-weight-bold">
             <slot name="title"></slot>
         </v-card-title>
         
@@ -31,15 +32,9 @@
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="secondary"
-            text
-            :ripple="false"
-            @click="dialog = false"
-          >
-            Post
-          </v-btn>
+            <v-spacer></v-spacer>
+            <slot name="actionbtns"></slot>
+
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -51,7 +46,7 @@ export default {
         dialog: false,
     }),
     watch: {
-        dialog(oV, nV) {
+        dialog(nV, oV) {
             if( nV === false ) {
                 this.$emit('closedDialog')
             }

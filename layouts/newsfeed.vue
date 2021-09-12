@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <AuthNavBar :user="user"/>
+    <AuthNavbar :user="user"/>
 
     <v-main>
       <v-row class="justify-center">

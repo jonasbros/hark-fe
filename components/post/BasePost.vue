@@ -4,7 +4,8 @@
         max-width="100%"
     >
         <v-img
-        src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+        v-if="post.upload_url"
+        :src="post.upload_url"
         height="200px"
         ></v-img>
 
@@ -12,37 +13,44 @@
             {{ post.title }}
         </v-card-title>
 
-        <v-card-subtitle>
-        1,000 miles of wonder
+        <v-card-subtitle class="text--primary">
+            {{ post.display_name }}
         </v-card-subtitle>
 
-        <v-card-actions>
-        <v-btn
-            color="orange lighten-2"
-            text
-        >
-            Explore
-        </v-btn>
+        <v-card-text class="text--primary">
+            {{ post.body }}
+        </v-card-text>
 
-        <v-spacer></v-spacer>
+        <v-divider></v-divider>
 
-        <v-btn
-            icon
-            @click="show = !show"
-        >
-            <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-        </v-btn>
+        <v-card-actions class="justify-space-around">
+
+            <v-btn
+                color="primary"
+                text
+                :ripple="false"
+            >
+                Like
+            </v-btn>
+
+            <v-btn
+                color="primary"
+                text
+                :ripple="false"                
+            >
+                Comment
+            </v-btn>
+
+            <v-btn
+                color="primary"
+                text
+                plain
+                :ripple="false"
+            >
+                Share
+            </v-btn>
+            
         </v-card-actions>
-
-        <v-expand-transition>
-        <div v-show="show">
-            <v-divider></v-divider>
-
-            <v-card-text>
-                {{ post.body }}
-            </v-card-text>
-        </div>
-        </v-expand-transition>
     </v-card>
 </template>
 

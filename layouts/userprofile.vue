@@ -1,6 +1,7 @@
 <template>
     <v-app> 
-        <AuthNavBar :user="user"/>
+        <AuthNavbar v-if="this.$auth.loggedIn" :user="user"/>
+        <BaseNavbar v-else :user="user"/>
 
         <v-main>
             <v-row class="justify-center">
@@ -14,14 +15,13 @@
                               <UserProfileHeader
                                 v-if="user"
                                 :user="user"
-                                :userisme="userIsMe"
                               />
                           </v-col>
                       </v-row>
 
                       <v-row>
                           <v-col class="col-12 pt-6">
-                              <Nuxt :userisme="userIsMe"/>
+                              <Nuxt/>
                           </v-col>
                       </v-row>
                   </v-container>
@@ -73,11 +73,9 @@ export default {
       },
       ...mapState(['isPageLoading'])
     },
-    
-    created() {
-      this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
-    },
     async fetch() {
+      this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
+
       if( this.userIsMe ) {
           this.user = this.$auth.user
       }else {

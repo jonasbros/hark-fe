@@ -12,7 +12,9 @@
       cols="8"
     >
         <v-skeleton-loader
-          v-bind="attrs"
+          class='mb-6'
+          boilerplate="true"
+          elevation="2"
           type="list-item-avatar, divider, list-item-three-line, card-heading, image, actions"
         ></v-skeleton-loader>
     </v-col>
@@ -30,7 +32,7 @@
       class="text-center"
       cols="8"
     >
-      <h3>It looks like you don't have posts yet.</h3>
+      <h3>{{ noPosts }}</h3>
     </v-col>
 
   </v-row>
@@ -41,12 +43,7 @@
 export default {
     layout: 'userprofile',
     data: () => ({
-      posts: [],
-      attrs: {
-        class: 'mb-6',
-        boilerplate: true,
-        elevation: 2,
-      },
+      posts: []
     }),
     computed: {
       url() {
@@ -58,6 +55,9 @@ export default {
       userIsMe() {
         return this.$route.params.url == this.customUrl
       },
+      noPosts() {
+        return ( this.userIsMe ? 'It looks like you don\'t have posts yet.' : 'No posts to display.')
+      }
     },
     async fetch() {
       await this.getPosts()

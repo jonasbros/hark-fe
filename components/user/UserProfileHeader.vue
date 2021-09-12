@@ -28,7 +28,6 @@
 
           <UserProfileNavMenu 
             :user="user"
-            :userisme="userisme" 
           />
         </div>
 
@@ -42,35 +41,31 @@ export default {
             type: Object,
             required: true
         },
-        userisme: {
-            type: Boolean,
-            required: true
-        }
     },
   }
 
 </script>
 
 <style lang="scss">
-#hark-profile__cover {
-  overflow: inherit;
+  #hark-profile__cover {
+    overflow: inherit;
 
-  .v-image__image {
-    border-radius: 5px;
+    .v-image__image {
+      border-radius: 5px;
+    }
   }
-}
 
-#hark-profile__avatar {
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 99 !important;
-}
+  #hark-profile__avatar {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99 !important;
+  }
 
-#hark-profile__name {
-  min-height: 240px;
-  max-width: 100%;
-}
+  #hark-profile__name {
+    min-height: 240px;
+    max-width: 100%;
+  }
 
 </style>

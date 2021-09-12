@@ -6,9 +6,9 @@
         class="hark-navbar text-uppercase"
     >
         <v-toolbar-title 
-        class="ml-6 font-weight-bold"
-        color="primary"
-        to="/"
+            class="ml-6 font-weight-bold"
+            color="primary"
+            to="/"
         >
         <NuxtLink to="/newsfeed">HARK</NuxtLink>
         </v-toolbar-title>
@@ -28,28 +28,28 @@
 
             <div class="d-flex justify-end align-center">
                 <v-btn 
-                icon
-                color="secondary"
+                    icon
+                    color="secondary"
                 >
                     <v-icon>mdi-message-text-outline</v-icon>
                 </v-btn>
 
                 <v-btn
-                icon
-                color="secondary"
+                    icon
+                    color="secondary"
                 >
                     <v-icon>mdi-bell</v-icon>
                 </v-btn>
 
                 <v-menu
-                left
-                bottom
+                    left
+                    bottom
                 >
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
-                        icon
-                        v-bind="attrs"
-                        v-on="on"
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
                         >
                         <UserAvatar 
                             :user="$auth.user"
@@ -61,8 +61,8 @@
 
                     <v-list>
                         <v-list-item
-                        :to="{ name: 'user-url', params: { url: $auth.user.custom_url } }"
-                        @click="() => {}"
+                            :to="{ name: 'user-url', params: { url: $auth.user.custom_url } }"
+                            @click="() => {}"
                         >
                         <v-list-item-title>
                             Profile
@@ -70,13 +70,13 @@
                         </v-list-item>
 
                         <v-list-item
-                        @click="() => {}"
+                            @click="() => {}"
                         >
                         <v-list-item-title>Settings</v-list-item-title>
                         </v-list-item>
 
                         <v-list-item
-                        @click="logout"
+                            @click="logout"
                         >
                         <v-list-item-title>Log out</v-list-item-title>
                         </v-list-item>
@@ -88,14 +88,14 @@
                 color="error"
                 v-model="isOffline"
             >
-            You are offline.
+                You are offline.
 
                 <template v-slot:action="{ attrs }">
                     <v-btn
-                    color="accent"
-                    text
-                    v-bind="attrs"
-                    @click="isOffline = false"
+                        color="accent"
+                        text
+                        v-bind="attrs"
+                        @click="isOffline = false"
                     >
                     Close
                     </v-btn>
