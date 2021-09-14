@@ -72,7 +72,7 @@ export default {
         url: '/api',
         endpoints: {
           login: { url: '/login', method: 'post' },
-          logout: { url: '/logout', method: 'get' },
+          logout: { url: '/logout', method: 'post' },
           user: { url: '/me', method: 'post' },
         },
         token: {
@@ -83,7 +83,7 @@ export default {
       google: {
         scope: ['openid', 'profile', 'email'],
         clientId: '1007335528465-ul56rp7hhrkrmd753c74quiui34cbg2m.apps.googleusercontent.com',
-        responseType: 'token id_token',
+        responseType: 'id_token token',
         codeChallengeMethod: '',
         redirectUri: 'http://www.nuxt-local.com:3000/login',
       },

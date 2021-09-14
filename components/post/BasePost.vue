@@ -16,7 +16,9 @@
             <v-img
                 v-if="post.upload_url"
                 :src="post.upload_url"
-                height="200px"
+                min-height="200px"
+                max-height="500px"
+                :contain="false"
             ></v-img>
 
             <v-card-title v-if="post.title">
@@ -96,6 +98,7 @@ export default {
     async fetch() {
         await this.getCurrentLikes()
     },
+    fetchOnServer: false,
     methods: {
         likeOrUnlike() {
             if( !this.isAuthLiked ) {

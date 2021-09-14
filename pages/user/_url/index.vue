@@ -71,6 +71,7 @@ export default {
     async fetch() {
       await this.getPosts()
     },
+    fetchOnServer: false,
 
     mounted() {
       window.onscroll = (e) => {

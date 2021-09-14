@@ -4,6 +4,12 @@
 
 <script>
 export default {
+    data: () => ({
+        login: {
+            email: null,
+            password: null
+        }
+    }),
     computed: {
         accessToken() {
             return this.$auth.strategy.token.get();
@@ -17,24 +23,37 @@ export default {
     },
     methods: {
         async saveUserToDB() {
+            this.login.email = this.$auth.user.email
+            this.login.password = this.$auth.user.sub
+
             const userInfo = {...this.$auth.user, password: this.$auth.user.sub , token: this.accessToken}
             try {
                 let response = await this.$axios.post(process.env.loginGoogleEndpoint, userInfo)
 
-                let newToken = await response.data.access_token
-                if( newToken ) {
-                    let tokenExp = this.$auth.$storage.getUniversal('_token_expiration.google')
-                    this.$auth.strategy.token.set(newToken)
-                    // set google token refresh exp. 1209600000 = two weeks
-                    this.$auth.$storage.setUniversal('_refresh_token_expiration.google', parseInt(tokenExp) + (60 * 60 * 24 * 30))
-                    this.$auth.$storage.setUniversal('_refresh_token.google', true)
-
-                    this.getLoginGoogleUser()
+                if( response.data.status == 'success' ) {
+                    this.toJWT()
                 }
             }catch(e) {
                 this.$nuxt.error({ message: e })
             }
 
+        },
+        // hacky 
+        // re logging in to laravelJWT because the google one wont persist after reload. can't find fix yet sadge
+        async toJWT() {
+            this.$auth.loginWith('laravelJWT', { data: this.login })
+            .then((response) => {
+                console.log(response)
+                if( response.data.access_token ) {
+                    this.getLoginGoogleUser()
+
+                    this.login.email = null
+                    this.login.password = null
+                }
+            })
+            .catch((e) => {
+                console.log(e)
+            })
         },
         
         async getLoginGoogleUser() {
