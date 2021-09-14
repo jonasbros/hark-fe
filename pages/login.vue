@@ -121,22 +121,24 @@ export default {
                 }
             })
             .catch((e) => {
-                if( e.response.status == 401 ) {
-                    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+                this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+                console.log(e)
+                // if( e.response.status == 401 ) {
+                //     this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
 
-                    this.errorMessage = 'The password you entered is incorrect.'
-                    this.errorSnackbar = true
+                //     this.errorMessage = 'The password you entered is incorrect.'
+                //     this.errorSnackbar = true
 
-                    this.login.password = ''
-                    this.$v.login.password.$touch()
-                }
+                //     this.login.password = ''
+                //     this.$v.login.password.$touch()
+                // }
                 
-                if( e.response.status >= 500 ){
-                    console.log('Network error.')
-                    this.$router.push('/error')
-                    this.$nuxt.error({ message: 'Network Error', statusCode: e.response.status })
+                // if( e.response.status >= 500 ){
+                //     console.log('Network error.')
+                //     this.$router.push('/error')
+                //     this.$nuxt.error({ message: 'Network Error', statusCode: e.response.status })
 
-                }
+                // }
             })
         },
         

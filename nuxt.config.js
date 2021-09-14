@@ -11,7 +11,7 @@ export default {
     titleTemplate: '%s - hark-fe',
     title: 'hark-fe',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'en',
     },
     meta: [
       { charset: 'utf-8' },
@@ -32,6 +32,8 @@ export default {
   plugins: [
     { src: '~/plugins/fontawesome.js', mode: 'client' },
     { src: '~/plugins/router-guards.js', mode: 'client' },
+    { src: '~/plugins/filters.js', mode: 'client' },
+
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -59,6 +61,7 @@ export default {
   ],
 
   auth: {
+    localStorage: false,
     redirect: {
       home: '/loggingin',
       logout: '/',
@@ -75,10 +78,7 @@ export default {
         token: {
           property: 'access_token',
           maxAge: 60 * 60
-        },
-        refreshToken: {
-          maxAge: 20160 * 60
-        },
+        }
       },
       google: {
         scope: ['openid', 'profile', 'email'],

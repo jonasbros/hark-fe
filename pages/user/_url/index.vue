@@ -2,39 +2,19 @@
   <v-row class="justify-center">
     <v-col
       cols="8"
+      v-if="userIsMe"
     >
-      <v-btn
-        small
-        depressed
-        text
-        fab
-        :ripple="false"
-        color="transparent"
-        @click="toggleEmojiPicker()"
-      >
-        <v-icon 
-          color="secondary"
-          dark
-        >
-          mdi-emoticon-happy-outline
-        </v-icon>
-      </v-btn>
-
-      <div v-if="renderEmojiPicker">
-        <VEmojiPicker
-          v-show="showEmojiPicker"
-          @select="selectEmoji" 
-          :dark="true"  
-        />
-      </div>
+      <NewPost @newPostAdded="insertNewPost" @newPostLoading="skeletonLoader = true"/>
     </v-col>
     
     <v-col 
-      v-if="$fetchState.pending"
+      v-if="$fetchState.pending || skeletonLoader"
       cols="8"
     >
         <v-skeleton-loader
-          v-bind="attrs"
+          class='mb-6'
+          :boilerplate="true"
+          elevation="2"
           type="list-item-avatar, divider, list-item-three-line, card-heading, image, actions"
         ></v-skeleton-loader>
     </v-col>
@@ -52,56 +32,90 @@
       class="text-center"
       cols="8"
     >
-      <h3>It looks like you don't have posts yet.</h3>
+      <h3>{{ noPosts }}</h3>
     </v-col>
+
   </v-row>
 </template>
 
 <script>
-import { VEmojiPicker, emojisDefault, categoriesDefault } from 'v-emoji-picker';
 
 export default {
-    layout: 'userProfile',
-    components: {
-      VEmojiPicker,
-    },
+    layout: 'userprofile',
+
     data: () => ({
       posts: [],
-      attrs: {
-        class: 'mb-6',
-        boilerplate: true,
-        elevation: 2,
-      },
-      renderEmojiPicker: false,
-      showEmojiPicker: false,
+      skeletonLoader: false,
+      fetchingPosts: false,
+      postsPage: 1,
     }),
+
     computed: {
       url() {
         return this.$route.params.url
+      },
+
+      customUrl() {
+        return (this.$auth.user ? this.$auth.user.custom_url : null)
+      },
+
+      userIsMe() {
+        return this.$route.params.url == this.customUrl
+      },
+
+      noPosts() {
+        return ( this.userIsMe ? 'It looks like you don\'t have posts yet.' : 'No posts to display.')
       }
     },
+
     async fetch() {
       await this.getPosts()
     },
+
     mounted() {
+      window.onscroll = (e) => {
+        this.getNextPage(e)
+      }
+
       this.renderEmojiPicker = true
     },
+
     methods: {
-      toggleEmojiPicker(e) {
-        this.showEmojiPicker = !this.showEmojiPicker
+      insertNewPost(post) {
+        this.skeletonLoader = false
+
+        this.posts.unshift(post)
       },
-      selectEmoji(emoji) {
-        console.log(emoji)
-      },
+
       async getPosts() {
-        let posts = await this.$axios.get(`/api/getposts/${this.url}/${process.env.postsPerPage}`)
-        this.posts = await posts.data.posts
-      }        
+        this.fetchingPosts = true
+
+        this.$axios.get(`/api/getposts/${this.url}?page=${this.postsPage}&perPage=${process.env.postsPerPage}`)
+        .then(({ data }) => {
+          this.posts.push(...data.posts.data) 
+          this.fetchingPosts = false
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+
+
+      },
+      
+      getNextPage(e) {
+          let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight >= document.documentElement.offsetHeight
+
+          if (bottomOfWindow && !this.fetchingPosts) {
+            this.postsPage++
+
+            this.getPosts()
+          }
+      }
         
     }
 }
 </script>
 
-<style>
+<style lang="scss">
 
 </style>
