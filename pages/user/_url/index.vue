@@ -46,6 +46,8 @@ export default {
     data: () => ({
       posts: [],
       skeletonLoader: false,
+      fetchingPosts: false,
+      postsPage: 1,
     }),
 
     computed: {
@@ -71,6 +73,10 @@ export default {
     },
 
     mounted() {
+      window.onscroll = (e) => {
+        this.getNextPage(e)
+      }
+
       this.renderEmojiPicker = true
     },
 
@@ -82,9 +88,29 @@ export default {
       },
 
       async getPosts() {
-        let posts = await this.$axios.get(`/api/getposts/${this.url}/${process.env.postsPerPage}`)
-        this.posts = await posts.data.posts
-      }        
+        this.fetchingPosts = true
+
+        this.$axios.get(`/api/getposts/${this.url}?page=${this.postsPage}&perPage=${process.env.postsPerPage}`)
+        .then(({ data }) => {
+          this.posts.push(...data.posts.data) 
+          this.fetchingPosts = false
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+
+
+      },
+      
+      getNextPage(e) {
+          let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight >= document.documentElement.offsetHeight
+
+          if (bottomOfWindow && !this.fetchingPosts) {
+            this.postsPage++
+
+            this.getPosts()
+          }
+      }
         
     }
 }

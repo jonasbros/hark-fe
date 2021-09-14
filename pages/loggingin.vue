@@ -23,14 +23,20 @@ export default {
 
                 let newToken = await response.data.access_token
                 if( newToken ) {
+                    let tokenExp = this.$auth.$storage.getUniversal('_token_expiration.google')
                     this.$auth.strategy.token.set(newToken)
-                    this.getLoginGoogleUser();
+                    // set google token refresh exp. 1209600000 = two weeks
+                    this.$auth.$storage.setUniversal('_refresh_token_expiration.google', parseInt(tokenExp) + (60 * 60 * 24 * 30))
+                    this.$auth.$storage.setUniversal('_refresh_token.google', true)
+
+                    this.getLoginGoogleUser()
                 }
             }catch(e) {
                 this.$nuxt.error({ message: e })
             }
 
         },
+        
         async getLoginGoogleUser() {
             try{
                 let user = await this.$axios.post(process.env.loginGoogleUserInfoEndpoint)

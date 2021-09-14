@@ -75,7 +75,7 @@ export default {
             if( this.postContent == '' ) return
             this.$emit('newPostLoading')
             
-            this.$axios.post(`/api/submitpost`, { postContent: this.postContent })
+            this.$axios.post(`/api/submituserbasepost`, { postContent: this.postContent })
             .then((response) => {
 
                 this.$emit('newPostAdded', response.data.post[0])

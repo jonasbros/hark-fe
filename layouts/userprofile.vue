@@ -1,5 +1,5 @@
 <template>
-    <v-app> 
+    <v-app id="infinite-scroll-target"> 
         <AuthNavbar v-if="this.$auth.loggedIn" :user="user"/>
         <BaseNavbar v-else :user="user"/>
 
