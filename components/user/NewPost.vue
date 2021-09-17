@@ -1,48 +1,28 @@
 <template>
-    <BaseDialog @clickedOutside="closeEmojiPicker" @closedDialog="closedDialog"> 
+    <BaseDialog 
+        @clickedOutside="closeEmojiPicker" 
+        @closedDialog="closedDialog"
+    > 
         <template v-slot:btnlabel>What's on your mind?</template>
         <template v-slot:title>New post</template>
         
         <template v-slot:content>
-            <form @enter.prevent="return false" @submit.prevent="post" ref="newPostForm" method="post">
-                <BaseTextarea
-                    ref="newPostTextarea"
-                    color="secondary"
-                    label="What's on your mind?"
-                    errorMessage="Post is empty :("
-                    v-model="postContent"
-                />
-                    
-                <v-btn
-                    class="newpost-included"
-                    id="emoji-picker-btn"
-                    small
-                    depressed
-                    text
-                    fab
-                    :ripple="false"
-                    color="transparent"
-                    @click="toggleEmojiPicker()"
-                >
-                <v-icon 
-                    color="secondary"
-                    dark
-                >
-                    mdi-emoticon-happy-outline
-                </v-icon>
-                </v-btn>
-
-                <div v-if="renderEmojiPicker">
-                    <VEmojiPicker
-                        class="newpost-included"
-                        v-show="showEmojiPicker"
-                        @select="selectEmoji" 
-                        :dark="true"  
+            <BasePostInput 
+                ref="newPostForm"
+                @selectEmoji="appendEmoji"
+                v-model="postContent" 
+            >
+                <template v-slot:textarea>
+                    <BaseTextarea
+                        ref="newPostTextarea"
+                        color="secondary"
+                        label="What's on your mind?"
+                        errorMessage="Post is empty :("
+                        v-model="postContent"
                     />
-                </div>
+                </template>
 
-                <button ref="newPostSubmitBtn" type="submit" class="d-none">Submit</button>
-            </form>
+            </BasePostInput>
         </template>
 
         <template v-slot:actionbtns>
@@ -50,7 +30,7 @@
                 color="primary"
                 text
                 :ripple="false"
-                @click="$refs.newPostSubmitBtn.click()"
+                @click="post"
             >
                 Post!
             </v-btn>
@@ -59,16 +39,9 @@
 </template>
 
 <script>
-import { VEmojiPicker, emojisDefault, categoriesDefault } from 'v-emoji-picker';
-
 export default {
-    components: {
-      VEmojiPicker,
-    },
     data: () => ({
         postContent: '',
-        renderEmojiPicker: true,
-        showEmojiPicker: false,
     }),
     methods: {
         async post() {
@@ -77,30 +50,42 @@ export default {
             
             this.$axios.post(`/api/submituserbasepost`, { postContent: this.postContent })
             .then((response) => {
-
                 this.$emit('newPostAdded', response.data.post[0])
-
-                document.querySelector('#dialog-activator').click()
-                this.postContent = ''
-                this.$refs.newPostTextarea.undirty()
+                this.clearTextArea()
             })
             .catch((e) => {
                 console.log(e)
             })
         },
+        
+        appendEmoji(emoji) {
+            this.postContent = this.postContent + emoji
+        },
+
+        newPostAdded(newPost) {
+            this.$emit('newPostAdded', newPost)
+        },
+
         closedDialog(status) {
             if( status ) return
             this.$refs.newPostTextarea.undirty()
         },
+
+        submitPost() {
+            this.$refs.newPostForm.submit()
+        },
+
         closeEmojiPicker() {
-            this.showEmojiPicker = false
+            this.$refs.newPostForm.showEmojiPicker = false
         },
-        toggleEmojiPicker(e) {
-            this.showEmojiPicker = !this.showEmojiPicker
-        },
-        selectEmoji(emoji) {
-            this.postContent = this.postContent + ' ' + emoji.data
-            this.showEmojiPicker = false;
+
+        clearTextArea() {                
+            document.querySelector('#dialog-activator').click()
+
+            this.postContent = ''
+            setTimeout(() => {
+                this.$refs.newPostTextarea.undirty()
+            })
         }
     }
 }

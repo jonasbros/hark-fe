@@ -4,7 +4,10 @@
       cols="8"
       v-if="userIsMe"
     >
-      <NewPost @newPostAdded="insertNewPost" @newPostLoading="skeletonLoader = true"/>
+      <NewPost 
+        @newPostAdded="insertNewPost" 
+        @newPostLoading="skeletonLoader = true"
+      />
     </v-col>
     
     <v-col 
@@ -24,7 +27,10 @@
       v-if="posts.length"
       cols="8"
     >
-      <BasePost v-for="post in posts" :key="post.id" :post="post"/>
+      <BasePost 
+        v-for="post in posts" :key="post.id * 322" 
+        :post="post"
+      />
     </v-col>
 
     <v-col 

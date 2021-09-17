@@ -53,6 +53,7 @@ export default {
             this.$emit('input', value)
         },
         undirty() {
+            console.log('hehe')
             this.$v.value.$reset()
         }
     }

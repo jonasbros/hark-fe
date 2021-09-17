@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <article>
         <v-skeleton-loader
             v-if="$fetchState.pending"
             class='mb-6'
@@ -17,7 +17,7 @@
                 v-if="post.upload_url"
                 :src="post.upload_url"
                 min-height="200px"
-                max-height="500px"
+                max-height="280px"
                 :contain="false"
             ></v-img>
 
@@ -76,7 +76,7 @@
                 
             </v-card-actions>
         </v-card>
-    </div>
+    </article>
     
 </template>
 

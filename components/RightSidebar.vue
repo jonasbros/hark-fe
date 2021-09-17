@@ -1,8 +1,8 @@
 <template>
     <v-col class="hark-sidebar__right  col-3">
-        <v-container>
+        <aside>
             <h2>RIGHT SIDEBAR</h2>
-        </v-container>
+        </aside>
     </v-col>
 </template>
 

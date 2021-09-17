@@ -42,7 +42,8 @@ export default {
       '~/components',
       '~/components/post',
       '~/components/user',
-      '~/components/auth'
+      '~/components/auth',
+      '~/components/inputs'
 
     ]
   },
