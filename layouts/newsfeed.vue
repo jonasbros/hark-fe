@@ -37,12 +37,19 @@ export default {
     // middleware: 'auth',
     computed: {
       user() {
-        return this.$auth.user;
+        return JSON.parse(localStorage.getItem('authUserInfo')).firebaseAuth.authUserInfo
       },
-      ...mapState(['isPageLoading'])
+      ...mapState(['isPageLoading', 'firebaseAuth'])
     },
     created() {
-      this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+        this.checkUserAuth()
+        console.log(localStorage.getItem('userAuthInfo'))
+    },
+    methods: {
+      checkUserAuth() {
+        
+        this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+      }
     }
 }
 </script>

@@ -121,9 +121,6 @@ export default {
             return !this.$v.$invalid
         }
     },
-    mounted() {
-        // console.log(this.$fire)
-    },
     methods: {
         async createUser() {            
             this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
@@ -141,6 +138,7 @@ export default {
             await this.$store.dispatch('firebaseAuth/SAVE_USER_FIRESTORE', user)
             .then((response) => {
                 if( response.data.status == 'success' ) {
+                    this.$store.dispatch('firebaseAuth/UPDATE_USER_INFO', response.data.user)
                     this.$router.push({ name: 'newsfeed' })
                 }
             })

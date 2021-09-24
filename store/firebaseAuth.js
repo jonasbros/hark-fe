@@ -6,6 +6,9 @@ export const state = () => ({
 export const mutations = {
     SET_USER(state, payload) {
         state.authUser = { ...payload }
+    },
+    SET_USER_INFO(state, payload) {
+        state.authUserInfo = { ...payload }
     }
 }
 
@@ -14,7 +17,6 @@ export const actions = {
         if (!authUser) {       
             return
         }
-        console.log(this.$fire)
         const { uid, email, emailVerified, displayName, photoURL } = authUser
 
         commit('SET_USER', {
@@ -22,8 +24,7 @@ export const actions = {
             email,
             emailVerified,
             displayName,
-            photoURL, // results in photoURL being undefined for server auth
-            // use custom claims to control access (see https://firebase.google.com/docs/auth/admin/custom-claims)
+            photoURL,
             isAdmin: claims.custom_claim
         })
     },
@@ -32,17 +33,18 @@ export const actions = {
         return this.$axios.post('/api/register', user)
     },
 
-    async nuxtServerInit({ dispatch, commit }, { res }) {
-        if (res && res.locals && res.locals.user) {
-          const { allClaims: claims, idToken: token, ...authUser } = res.locals.user
-      
-          await dispatch('ON_AUTH_STATE_CHANGED_ACTION', {
-            authUser,
-            claims,
-            token
-          })
+    async GET_USER_DB({ dispatch }, email) {
+        this.$axios.get(`/api/user?email=${email}`)
+        .then((response) => {
+            dispatch('UPDATE_USER_INFO', response.data.user)
+        })
+        .catch((e => {
+            console.log(e)
+        }))
+    },
 
-        }
+    UPDATE_USER_INFO({ commit }, user) {
+        commit('SET_USER_INFO', user)
     }
 }
 export const getters = {

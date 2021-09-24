@@ -32,10 +32,14 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '~/plugins/fontawesome.js', mode: 'client' },
-    { src: '~/plugins/router-guards.js', mode: 'client' },
     { src: '~/plugins/filters.js', mode: 'client' },
+    { src: '~/plugins/persistedState.js', mode: 'client' },
 
   ],
+
+  router: {
+    middleware: 'router-auth'
+  },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components:  {

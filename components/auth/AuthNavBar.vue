@@ -52,7 +52,7 @@
                             v-on="on"
                         >
                         <UserAvatar 
-                            :user="$auth.user"
+                            :user="user"
                             size="34" 
                         />
 
@@ -61,7 +61,7 @@
 
                     <v-list>
                         <v-list-item
-                            :to="{ name: 'user-url', params: { url: $auth.user.custom_url } }"
+                            :to="{ name: 'user-url', params: { url: user.custom_url } }"
                             @click="() => {}"
                         >
                         <v-list-item-title>
@@ -69,10 +69,8 @@
                         </v-list-item-title>
                         </v-list-item>
 
-                        <v-list-item
-                            @click="() => {}"
-                        >
-                        <v-list-item-title>Settings</v-list-item-title>
+                        <v-list-item>
+                            <v-list-item-title>Settings</v-list-item-title>
                         </v-list-item>
 
                         <v-list-item
@@ -107,25 +105,26 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
+    props: {
+        user: {
+            type: Object,
+            required: true
+        }
+    },
     computed: {
         isOffline() {
             return this.$nuxt.isOffline;
         },
     },
-    created() {
-      this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
-
-      if( this.$auth.loggedIn && !this.$auth.user.custom_url ) {
-        this.logout()
-      }
-    },
     methods: {
-      logout() {
-        this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
-
-        this.$auth.logout()
-      },
+        logout() {
+            this.$fire.auth.signOut()
+            this.$router.push({ name: 'login' })
+        },
+ 
     }
 }
 </script>

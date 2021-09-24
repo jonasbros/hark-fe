@@ -108,6 +108,9 @@ export default {
             return !this.$v.$invalid
         },
     },
+    mounted() {
+        console.log(this.$fire)
+    },
     methods: {
         formLogin() {
             if( !this.isFormValid ) return
