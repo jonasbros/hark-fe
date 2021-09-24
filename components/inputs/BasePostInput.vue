@@ -41,9 +41,12 @@ export default {
       VEmojiPicker,
     },
     data: () => ({
-        renderEmojiPicker: true,
+        renderEmojiPicker: false,
         showEmojiPicker: false,
     }),
+    mounted() {
+        this.renderEmojiPicker = true
+    },
     methods: {
         closeEmojiPicker() {
             this.showEmojiPicker = false
@@ -53,7 +56,7 @@ export default {
         },
         selectEmoji(emoji) {
             this.$emit('selectEmoji', emoji.data)
-            this.showEmojiPicker = false;
+            this.showEmojiPicker = false
         },
         enterPrevent() {
             return false
@@ -62,6 +65,21 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+    form {
+        position: relative;
+    }
 
+    #emoji-picker-btn {
+        position: absolute;
+        right: .75em;
+        bottom: 2.75em;
+    }
+
+    #EmojiPicker {
+        position: absolute;
+        z-index: 99;
+        right: 3.5em;
+        bottom: 2.5em;
+    }
 </style>

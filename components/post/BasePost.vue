@@ -60,7 +60,8 @@
                     color="secondary"
                     text
                     plain
-                    :ripple="false"                
+                    :ripple="false"            
+                    @click="showCommentInput = !showCommentInput"    
                 >
                     Comment
                 </v-btn>
@@ -75,7 +76,14 @@
                 </v-btn>
                 
             </v-card-actions>
+
+            <v-divider v-if="$auth.loggedIn && showCommentInput"></v-divider>
+
+            <div class="px-5 pt-7 pb-5" v-show="showCommentInput">
+                <PostComment/>
+            </div>            
         </v-card>
+
     </article>
     
 </template>
@@ -92,7 +100,8 @@ export default {
         return {
             show: false,
             likes: 0,
-            isAuthLiked: false
+            isAuthLiked: false,
+            showCommentInput: false
         }
     },
     async fetch() {

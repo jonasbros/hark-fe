@@ -43,8 +43,13 @@ export default {
     data: () => ({
         postContent: '',
     }),
+    mounted() {
+        console.log(this.$refs.newPostForm)
+    },
     methods: {
         async post() {
+            this.$refs.newPostTextarea.$v.value.$touch()
+
             if( this.postContent == '' ) return
             this.$emit('newPostLoading')
             
@@ -92,25 +97,5 @@ export default {
 </script>
 
 <style lang="scss">
-    .base-dialog {
-        overflow: visible !important;
-    }
 
-    #dialog-content {
-        position: relative;
-        padding: 1em;
-    }
-    
-    #emoji-picker-btn {
-        position: absolute;
-        right: 1.75em;
-        bottom: 22%;
-    }
-
-    #EmojiPicker {
-        position: absolute;
-        z-index: 99;
-        right: 3.75em;
-        top: -20%;
-    }
 </style>

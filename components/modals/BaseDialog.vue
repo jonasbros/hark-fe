@@ -54,12 +54,12 @@ export default {
     },
     methods: {
         clickedOutside() {
+            if( !this.dialog ) return
             this.$emit('clickedOutside')
         },
         newPostIncluded() {
             return [               
-                document.querySelectorAll('.newpost-included')[0],
-                document.querySelectorAll('.newpost-included')[1],
+                ...document.querySelectorAll('.newpost-included')
             ]
         },
     }
@@ -67,5 +67,12 @@ export default {
 </script>
 
 <style lang="scss">
+    .base-dialog {
+        // overflow: scroll !important;
+    }
 
+    #dialog-content {
+        position: relative;
+        padding: 1em;
+    }
 </style>
