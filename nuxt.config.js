@@ -5,6 +5,7 @@ export default {
     loginGoogleEndpoint: '/api/loginWithGoogle',
     loginGoogleUserInfoEndpoint: '/api/me',
     postsPerPage: 5,
+    NODE_ENV: 'development'
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -81,7 +82,8 @@ export default {
           onAuthStateChangedMutation: false,
           onAuthStateChangedAction: 'firebaseAuth/ON_AUTH_STATE_CHANGED_ACTION',
         }
-      }
+      },
+      firestore: true
     }
   },
 

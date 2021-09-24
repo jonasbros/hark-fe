@@ -1,5 +1,6 @@
 export const state = () => ({
-    authUser: null
+    authUser: null,
+    authUserInfo: null,
 })
   
 export const mutations = {
@@ -13,8 +14,7 @@ export const actions = {
         if (!authUser) {       
             return
         }
-
-        console.log(authUser)
+        console.log(this.$fire)
         const { uid, email, emailVerified, displayName, photoURL } = authUser
 
         commit('SET_USER', {
@@ -26,7 +26,10 @@ export const actions = {
             // use custom claims to control access (see https://firebase.google.com/docs/auth/admin/custom-claims)
             isAdmin: claims.custom_claim
         })
+    },
 
+    async SAVE_USER_FIRESTORE(context, user) {
+        return this.$axios.post('/api/register', user)
     },
 
     async nuxtServerInit({ dispatch, commit }, { res }) {

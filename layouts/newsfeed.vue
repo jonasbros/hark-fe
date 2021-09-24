@@ -34,7 +34,7 @@
 import { mapState } from 'vuex';
 
 export default {
-    middleware: 'auth',
+    // middleware: 'auth',
     computed: {
       user() {
         return this.$auth.user;

@@ -121,27 +121,52 @@ export default {
             return !this.$v.$invalid
         }
     },
+    mounted() {
+        // console.log(this.$fire)
+    },
     methods: {
-        createUser() {
+        async createUser() {            
             this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
 
-            this.$axios.post('/api/register', this.signup)
+            try { 
+                let auth = await this.$fire.auth.createUserWithEmailAndPassword(this.signup.email, this.signup.password)
+                this.saveUserDB({ uid: auth.user.uid, ...this.signup })
+            } catch (e) { 
+                console.log(e)
+                this.signupHasErrors(e)
+            }
+        },
+
+        async saveUserDB(user) {
+            await this.$store.dispatch('firebaseAuth/SAVE_USER_FIRESTORE', user)
             .then((response) => {
-                if( response.data.access_token ) {
-                    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+                if( response.data.status == 'success' ) {
                     this.$router.push({ name: 'newsfeed' })
                 }
             })
             .catch((e) => {
-                if( e.response.status == 422 ) {
-                    this.errorMessage = e.response.data.message
-                    this.errorSnackbar = true
-
-                    this.signup.email = ''
-                    this.$v.signup.email.$touch()
-                }
-                this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+                console.log(e)
+                this.signupHasErrors(e)
             })
+
+        },
+
+        signupHasErrors(e) {
+            this.errorSnackbar = true
+            this.signup.email = ''
+            this.$v.signup.email.$touch()
+
+            //message from firbase
+            if( e.code ) {
+                this.errorMessage = e.message
+            }
+
+            //message from sql db
+            if( e.response && e.response.status == 422 ) {
+                this.errorMessage = e.response.data.message
+            }
+
+            this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
         },
 
         nameErrors (errors = []) {
