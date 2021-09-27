@@ -48,10 +48,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isPageLoading'])
+    ...mapState(['isPageLoading', 'firebaseAuth'])
   },
   created() {
-    if( this.$auth.loggedIn ) {
+    if( this.$store.firebaseAuth.authToken ) {
       this.$nuxt.setLayout('authenticated')
     }
     this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)

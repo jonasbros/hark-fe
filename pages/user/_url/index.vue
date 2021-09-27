@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 
 export default {
     layout: 'userprofile',
@@ -62,7 +63,7 @@ export default {
       },
 
       customUrl() {
-        return (this.$auth.user ? this.$auth.user.custom_url : null)
+        return (this.firebaseAuth.authUserInfo ? this.firebaseAuth.authUserInfo.custom_url : null)
       },
 
       userIsMe() {
@@ -71,7 +72,9 @@ export default {
 
       noPosts() {
         return ( this.userIsMe ? 'It looks like you don\'t have posts yet.' : 'No posts to display.')
-      }
+      },
+
+      ...mapState(['firebaseAuth'])
     },
 
     async fetch() {

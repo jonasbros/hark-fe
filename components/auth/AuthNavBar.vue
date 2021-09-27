@@ -64,9 +64,9 @@
                             :to="{ name: 'user-url', params: { url: user.custom_url } }"
                             @click="() => {}"
                         >
-                        <v-list-item-title>
-                            Profile
-                        </v-list-item-title>
+                            <v-list-item-title>
+                                Profile
+                            </v-list-item-title>
                         </v-list-item>
 
                         <v-list-item>
@@ -76,7 +76,7 @@
                         <v-list-item
                             @click="logout"
                         >
-                        <v-list-item-title>Log out</v-list-item-title>
+                            <v-list-item-title>Log out</v-list-item-title>
                         </v-list-item>
                     </v-list>
                 </v-menu>
@@ -121,8 +121,12 @@ export default {
     },
     methods: {
         logout() {
+            this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
+
+            this.$axios.setHeader('Authorization', '')
             this.$fire.auth.signOut()
-            this.$router.push({ name: 'login' })
+            //temporary solution. router.push() / changing route crashes after signout 
+            location.href = '/login'
         },
  
     }

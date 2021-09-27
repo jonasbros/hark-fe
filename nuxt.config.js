@@ -33,7 +33,7 @@ export default {
   plugins: [
     { src: '~/plugins/fontawesome.js', mode: 'client' },
     { src: '~/plugins/filters.js', mode: 'client' },
-    { src: '~/plugins/persistedState.js', mode: 'client' },
+    { src: '~/plugins/persistedAuth.js', mode: 'client' },
 
   ],
 

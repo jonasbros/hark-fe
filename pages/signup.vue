@@ -14,7 +14,7 @@
 
         <v-row justify="center">
             <v-col class="col-6">
-                <form autocomplete="off" @submit.prevent="createUser">
+                <form autocomplete="off" @submit.prevent="createUser" method="post">
                     <v-text-field
                         autocomplete="off"
                         v-model="signup.name"
@@ -110,9 +110,9 @@ export default {
             statusMessage: '',
             submitted: false,
             signup: {
-                email: 'test1@email.com',
+                email: 'quick@email.com',
                 password: 'jost883446',
-                name: 'Jones'
+                name: 'Hehe'
             },
         }
     },
@@ -137,9 +137,10 @@ export default {
         async saveUserDB(user) {
             await this.$store.dispatch('firebaseAuth/SAVE_USER_FIRESTORE', user)
             .then((response) => {
-                if( response.data.status == 'success' ) {
-                    this.$store.dispatch('firebaseAuth/UPDATE_USER_INFO', response.data.user)
-                    this.$router.push({ name: 'newsfeed' })
+                console.log(response)
+                if( response.data.access_token ) {
+                    this.$axios.setHeader('Authorization', 'Bearer ' + response.data.access_token)
+                    this.getUserInfo(user.uid)
                 }
             })
             .catch((e) => {
@@ -147,6 +148,18 @@ export default {
                 this.signupHasErrors(e)
             })
 
+        },
+
+        getUserInfo(uid) {
+            this.$store.dispatch('user/FETCH_USER', uid)
+            .then((response) => {
+                this.$store.dispatch('firebaseAuth/UPDATE_USER_INFO', response.data.user)
+                this.$router.push({ name: 'newsfeed' })
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+            
         },
 
         signupHasErrors(e) {

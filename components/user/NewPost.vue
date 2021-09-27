@@ -43,9 +43,6 @@ export default {
     data: () => ({
         postContent: '',
     }),
-    mounted() {
-        console.log(this.$refs.newPostForm)
-    },
     methods: {
         async post() {
             this.$refs.newPostTextarea.$v.value.$touch()
@@ -53,7 +50,7 @@ export default {
             if( this.postContent == '' ) return
             this.$emit('newPostLoading')
             
-            this.$axios.post(`/api/submituserbasepost`, { postContent: this.postContent })
+            this.$axios.post(`/api/submitUserBasePost`, { postContent: this.postContent })
             .then((response) => {
                 this.$emit('newPostAdded', response.data.post[0])
                 this.clearTextArea()

@@ -82,7 +82,7 @@ export default {
             return (this.user ? this.user.custom_url : null)
         },     
         userisme() {
-            return (this.$auth.loggedIn ? this.$auth.user.custom_url == this.$route.params.url : false)
+            return (this.user.custom_url ? this.user.custom_url == this.$route.params.url : false)
         }  
     }
 

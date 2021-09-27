@@ -1,7 +1,7 @@
 <template>
     <v-app id="infinite-scroll-target"> 
-        <AuthNavbar v-if="this.$auth.loggedIn" :user="user"/>
-        <BaseNavbar v-else :user="user"/>
+        <AuthNavbar v-if="user" :user="user"/>
+        <BaseNavbar v-else />
 
         <v-main>
             <v-row class="justify-center">
@@ -21,7 +21,7 @@
 
                       <v-row>
                           <v-col class="col-12 pt-6">
-                              <Nuxt/>
+                              <Nuxt v-if="user"/>
                           </v-col>
                       </v-row>
                   </v-container>
@@ -47,7 +47,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from 'vuex'
+import * as Cookies from 'js-cookie';
 
 export default {
     data() {
@@ -57,43 +58,35 @@ export default {
     },
     watch: {
       // runs fetch() again to refresh user profile
-      '$route.params.url': function(oV, nV) {
-        this.$fetch()
-      }
+      '$route.params.url': function(ov, nv) {
+        this.refresh()
+      },
     },
     computed: {
-      customUrl() {
-        return (this.$auth.user ? this.$auth.user.custom_url : null)
-      },
-      userIsMe() {
-        return this.$route.params.url == this.customUrl
-      },
-      userUrl() {
-        return (this.userIsMe ? this.customUrl : this.$route.params.url)
-      },
-      ...mapState(['isPageLoading'])
+      ...mapState(['isPageLoading', 'firebaseAuth']),
     },
+
     async fetch() {
       this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
-
-      if( this.userIsMe ) {
-          this.user = this.$auth.user
-      }else {
-
-        try {
-          this.user = await this.$store.dispatch('user/GET_CURRENT_PROFILE_OWNER', this.userUrl)
-        }catch(e) {
-          this.$nuxt.error({ message: e, statusCode: 404 })
-        }
-
-      }
-      
-      this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
     },
+
+    async created() {
+      //get user profile info,
+      try {
+        let getUser = await this.$store.dispatch('user/GET_CURRENT_PROFILE_OWNER', this.$route.params.url)
+        this.user = getUser.user
+
+        this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+      }catch(e) {
+        console.log(e)
+        this.$nuxt.error({ message: e, statusCode: 404 })
+      }
+    },
+
     methods: {
       refresh() {
         this.$fetch()
-      }
+      },
     }
 }
 </script>

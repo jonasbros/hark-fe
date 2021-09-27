@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <AuthNavbar :user="user"/>
+    <AuthNavbar v-if="user" :user="user"/>
 
     <v-main>
       <v-row class="justify-center">
@@ -34,22 +34,36 @@
 import { mapState } from 'vuex';
 
 export default {
-    // middleware: 'auth',
+    data: () => ({
+      user: null
+    }),
     computed: {
-      user() {
-        return JSON.parse(localStorage.getItem('authUserInfo')).firebaseAuth.authUserInfo
-      },
-      ...mapState(['isPageLoading', 'firebaseAuth'])
+      ...mapState(['isPageLoading'])
     },
-    created() {
+    mounted() {
         this.checkUserAuth()
-        console.log(localStorage.getItem('userAuthInfo'))
     },
     methods: {
       checkUserAuth() {
-        
-        this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
-      }
+        this.user = this.$store.state.firebaseAuth.authUserInfo
+
+        if( this.user ) {
+          this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+        }else {
+          this.logout()
+        }
+
+      },
+
+      logout() {
+          this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
+
+          this.$axios.setHeader('Authorization', '')
+          this.$fire.auth.signOut()
+          //temporary solution. router.push() / changing route crashes after signout 
+          location.href = '/login'
+      },
+
     }
 }
 </script>

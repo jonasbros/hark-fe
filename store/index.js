@@ -16,16 +16,7 @@ export const actions = {
     },
 
     async nuxtServerInit({ dispatch, commit }, { res }) {
-        if (res && res.locals && res.locals.user) {
-          const { allClaims: claims, idToken: token, ...authUser } = res.locals.user
-      
-          await dispatch('firebaseAuth/ON_AUTH_STATE_CHANGED_ACTION', {
-            authUser,
-            claims,
-            token
-          })
-
-        }
+        await dispatch('firebaseAuth/NUXT_SERVER_INIT', res)
     },
 
 }

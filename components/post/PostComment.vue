@@ -39,6 +39,9 @@ export default {
     methods: {
         appendEmoji(emoji) {
             this.commentContent = this.commentContent + emoji
+        },
+        post() {
+            console.log('post')
         }
     }
 }
