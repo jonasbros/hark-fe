@@ -49,6 +49,8 @@
                         @blur="$v.signup.password.$touch()"                
                     ></v-text-field>
 
+                    <p>Already have an account? <NuxtLink to="/login">Log In</NuxtLink></p>
+
                     <v-btn
                         type="submit"
                         class="mr-4 my-4"
@@ -58,13 +60,6 @@
                     Sign Up
                     </v-btn>
                 </form>
-            </v-col>
-
-        </v-row>
-        
-        <v-row justify="center">
-            <v-col class="col-6">
-                <LoginGoogleButton/>
             </v-col>
 
         </v-row>

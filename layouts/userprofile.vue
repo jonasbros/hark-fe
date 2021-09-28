@@ -48,7 +48,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import * as Cookies from 'js-cookie';
 
 export default {
     data() {

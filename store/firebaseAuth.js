@@ -13,15 +13,19 @@ export const mutations = {
     },
     SET_AUTH_HEADER_TOKEN(state, token) {
         state.authToken = token
+    },
+    RESET_AUTH_MUTATION() {
+        state.authToken = null
+        state.authUserInfo = null
+        state.authUser = null
     }               
 }
 
 export const actions = {
     async ON_AUTH_STATE_CHANGED_ACTION({ commit, dispatch }, { authUser, claims }) {
         if (!authUser) {  
-            console.log(authUser)
             // when logging out or failed login
-            dispatch('UPDATE_USER_INFO', null)     
+            commit('RESET_AUTH_MUTATION')
             return
         }
 
@@ -51,10 +55,6 @@ export const actions = {
         }))
     },
 
-    UPDATE_USER_INFO({ commit }, user) {
-        commit('SET_USER_INFO', user)
-    },
-
     async NUXT_SERVER_INIT({dispatch}, res) {
         if (res && res.locals && res.locals.user) {
             const { allClaims: claims, idToken: token, ...authUser } = res.locals.user
@@ -74,6 +74,7 @@ export const actions = {
         commit('SET_AUTH_HEADER_TOKEN', token)
     }
 }
+
 export const getters = {
     GET_AUTH_USER_URL(state) {
         return state.authUserInfo.custom_url

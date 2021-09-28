@@ -39,6 +39,8 @@
                         @blur="$v.login.password.$touch()"                
                     ></v-text-field>
 
+                    <p>Don't have account? <NuxtLink to="/signup">Sign Up</NuxtLink></p>
+
                     <v-btn
                         type="submit"
                         class="mr-4 my-4"
@@ -50,12 +52,6 @@
                 </form>
             </v-col>
 
-        </v-row>
-        
-        <v-row justify="center">
-            <v-col class="col-6">
-                <LoginGoogleButton/>
-            </v-col>
         </v-row>
 
         <v-snackbar
@@ -107,8 +103,7 @@ export default {
         },
     },
     mounted() {
-        console.log(this.$store)
-        console.log(this.$fire)
+        console.log(this.$fire.auth)
     },
     methods: {
         formLogin() {

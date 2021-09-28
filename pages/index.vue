@@ -73,3 +73,20 @@
     </v-col>
   </v-row>
 </template>
+
+<script>
+import * as Cookies from 'js-cookie';
+
+export default {
+  mounted() {
+    let c = JSON.parse(Cookies.get('user'))
+
+    if( c.firebaseAuth.authToken ) {
+      this.$router.push({name: 'newsfeed'})
+    }else {
+      this.$router.push({name: 'login'})
+    }
+    
+  }
+}
+</script>

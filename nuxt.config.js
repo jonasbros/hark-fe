@@ -85,7 +85,7 @@ export default {
         initialize: {
           onAuthStateChangedMutation: false,
           onAuthStateChangedAction: 'firebaseAuth/ON_AUTH_STATE_CHANGED_ACTION',
-        }
+        },
       },
       firestore: true
     }
@@ -141,7 +141,6 @@ export default {
       }
     }
   },
-
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   }
