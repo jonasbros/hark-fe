@@ -102,9 +102,6 @@ export default {
             return !this.$v.$invalid
         },
     },
-    mounted() {
-        console.log(this.$fire.auth)
-    },
     methods: {
         formLogin() {
             if( !this.isFormValid ) return
@@ -158,9 +155,10 @@ export default {
         },
 
         getAuthUser(email) {
-            this.$axios.get(`/api/user?email=${email}`)
+            this.$store.dispatch(`firebaseAuth/GET_USER_DB`, email)
             .then((response) => {
-                this.$store.dispatch('firebaseAuth/UPDATE_USER_INFO', response.data.user)
+                console.log(response)
+                this.$store.commit('firebaseAuth/SET_USER_INFO', { ...response.data.user })
                 this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
                 this.$router.push({ name: 'newsfeed' })
             })

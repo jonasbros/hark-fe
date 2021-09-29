@@ -31,28 +31,27 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
-    data: () => ({
-      user: null
-    }),
     computed: {
-      ...mapState(['isPageLoading'])
+      ...mapState(['isPageLoading']),
+      ...mapGetters({
+        user: 'firebaseAuth/GET_USER_INFO',
+        isLoggedIn: 'firebaseAuth/GET_IS_LOGGED_IN'
+      })
     },
     mounted() {
         this.checkUserAuth()
     },
     methods: {
       checkUserAuth() {
-        this.user = this.$store.state.firebaseAuth.authUserInfo
-
-        if( this.user ) {
+        if( this.isLoggedIn ) {
           this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
         }else {
           this.logout()
         }
-
+        
       },
 
       logout() {

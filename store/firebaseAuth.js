@@ -1,3 +1,6 @@
+import * as Cookies from 'js-cookie';
+
+
 export const state = () => ({
     authUser: null,
     authUserInfo: null,
@@ -45,14 +48,8 @@ export const actions = {
         return await this.$axios.post('/api/register', user)
     },
 
-    async GET_USER_DB({ dispatch }, email) {
-        this.$axios.get(`/api/user?email=${email}`)
-        .then((response) => {
-            dispatch('UPDATE_USER_INFO', { ...response.data.user })
-        })
-        .catch((e => {
-            console.log(e)
-        }))
+    async GET_USER_DB({ commit }, email) {
+        return await this.$axios.get(`/api/user?email=${email}`)
     },
 
     async NUXT_SERVER_INIT({dispatch}, res) {
@@ -78,5 +75,16 @@ export const actions = {
 export const getters = {
     GET_AUTH_USER_URL(state) {
         return state.authUserInfo.custom_url
+    },
+
+    GET_USER_INFO(state) {
+        let c = JSON.parse(Cookies.get('user'))
+        let userInfo = !!state.authUserInfo ? state.authUserInfo : c.firebaseAuth.authUserInfo
+
+        return userInfo
+    },
+
+    GET_IS_LOGGED_IN(state) {
+        return !!state.authUserInfo
     }
 }

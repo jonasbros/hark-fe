@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-contaner>
     <h1>
       {{ pageNotFound }}
     </h1>
@@ -20,11 +20,11 @@
           size="64"
       ></v-progress-circular>
     </v-overlay>
-  </v-app>
+  </v-contaner>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
   layout: 'default',
@@ -48,15 +48,21 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isPageLoading', 'firebaseAuth'])
+    ...mapState(['isPageLoading', 'firebaseAuth']),
+    ...mapGetters({
+        isLoggedIn: 'firebaseAuth/GET_IS_LOGGED_IN'
+    })
   },
   created() {
-    if( this.$store.firebaseAuth && this.$store.firebaseAuth.authToken ) {
-      this.$nuxt.setLayout('authenticated')
-    }
-    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
 
+    if( this.isLoggedIn ) {
+      this.$nuxt.setLayout('newsfeed')
+    }
   },
+  mounted() {
+    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+  }
 }
 </script>
 

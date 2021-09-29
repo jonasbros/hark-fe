@@ -57,9 +57,13 @@ export default {
                     urlName: 'user-url-about'
                 },
                 {
-                    name: 'Media',
+                    name: 'Audio Clips',
                     urlName: 'user-url-media'
                 },
+                {
+                    name: 'Videos',
+                    urlName: 'user-url-media'
+                },                
                 {
                     name: 'Friends',
                     urlName: 'user-url-friends'
