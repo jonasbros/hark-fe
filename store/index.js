@@ -13,7 +13,12 @@ export const actions = {
         if( payload != state.isPageLoading ) {
             commit('TOGGLE_IS_PAGE_LOADING', payload)
         }
-    }
+    },
+
+    async nuxtServerInit({ dispatch, commit }, { res }) {
+        await dispatch('firebaseAuth/NUXT_SERVER_INIT', res)
+    },
+
 }
 
 export const getters = {

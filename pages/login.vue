@@ -14,7 +14,7 @@
 
         <v-row justify="center">
             <v-col class="col-6">
-                <form autocomplete="off" @submit.prevent="formLogin">
+                <form autocomplete="off" @submit.prevent="formLogin" method="post">
                     <v-text-field
                         autocomplete="off"
                         v-model="login.email"
@@ -39,6 +39,8 @@
                         @blur="$v.login.password.$touch()"                
                     ></v-text-field>
 
+                    <p>Don't have account? <NuxtLink to="/signup">Sign Up</NuxtLink></p>
+
                     <v-btn
                         type="submit"
                         class="mr-4 my-4"
@@ -50,12 +52,6 @@
                 </form>
             </v-col>
 
-        </v-row>
-        
-        <v-row justify="center">
-            <v-col class="col-6">
-                <LoginGoogleButton/>
-            </v-col>
         </v-row>
 
         <v-snackbar
@@ -90,19 +86,17 @@ export default {
         email: { required, email },
       }
     },
-    data() {
-        return {
-            errorSnackbar: false,
-            errorMessage: '',
-            showpass: false,
-            statusMessage: '',
-            submitted: false,
-            login: {
-                email: 'test1@email.com',
-                password: 'jost883446',
-            },
-        }
-    },
+    data: () => ({
+        errorSnackbar: false,
+        errorMessage: '',
+        showpass: false,
+        statusMessage: '',
+        submitted: false,
+        login: {
+            email: 'quick@email.com',
+            password: 'jost883446',
+        },        
+    }),
     computed: {
         isFormValid() {
             return !this.$v.$invalid
@@ -113,31 +107,63 @@ export default {
             if( !this.isFormValid ) return
             
             this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
+            this.$fire.auth.signInWithEmailAndPassword(this.login.email, this.login.password)
+            .then((response) => {
+                if( response.user ) {
+                    this.loginBackend()
+                }
 
-            this.$auth.loginWith('laravelJWT', { data: this.login })
+            })
+            .catch((e) => {
+                console.log(e)
+                if( e.code == 'auth/wrong-password' ) {
+                    this.errorMessage = 'The password you entered is incorrect.'
+                    this.login.password = ''
+                    this.$v.login.password.$touch()
+                }else {
+                    // auth/user-disabled
+                    // auth/invalid-email
+                    // auth/user-not-found
+                    this.errorMessage = e.message
+                    this.$v.login.email.$touch()
+                }
+
+                this.errorSnackbar = true
+                this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+            })
+        },
+
+        loginBackend() {
+            this.$axios.post(`/api/login`, {email: this.login.email, password: this.login.password})
             .then((response) => {
                 if( response.data.access_token ) {
-                    this.$router.push({ name: 'newsfeed' })
+                    this.$store.dispatch('firebaseAuth/UPDATE_AUTH_HEADER_TOKEN', response.data.access_token)
+                    this.getAuthUser(this.login.email)
                 }
             })
             .catch((e) => {
-                this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+                console.log(e.response)
                 if( e.response.status == 401 ) {
-                    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
-
-                    this.errorMessage = 'The password you entered is incorrect.'
-                    this.errorSnackbar = true
-
+                    this.errorMessage = 'Email or Password incorrect. Please try again.'
                     this.login.password = ''
                     this.$v.login.password.$touch()
+                    this.errorSnackbar = true
                 }
-                
-                if( e.response.status >= 500 ){
-                    console.log('Network error.')
-                    this.$router.push('/error')
-                    this.$nuxt.error({ message: 'Network Error', statusCode: e.response.status })
+                this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+            })
 
-                }
+        },
+
+        getAuthUser(email) {
+            this.$store.dispatch(`firebaseAuth/GET_USER_DB`, email)
+            .then((response) => {
+                console.log(response)
+                this.$store.commit('firebaseAuth/SET_USER_INFO', { ...response.data.user })
+                this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+                this.$router.push({ name: 'newsfeed' })
+            })
+            .catch((e) => {
+                console.log(e)
             })
         },
         

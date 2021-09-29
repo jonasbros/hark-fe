@@ -5,6 +5,7 @@ export default {
     loginGoogleEndpoint: '/api/loginWithGoogle',
     loginGoogleUserInfoEndpoint: '/api/me',
     postsPerPage: 5,
+    NODE_ENV: 'development'
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -31,10 +32,14 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '~/plugins/fontawesome.js', mode: 'client' },
-    { src: '~/plugins/router-guards.js', mode: 'client' },
     { src: '~/plugins/filters.js', mode: 'client' },
+    { src: '~/plugins/persistedAuth.js', mode: 'client' },
 
   ],
+
+  router: {
+    middleware: 'router-auth'
+  },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components:  {
@@ -42,7 +47,9 @@ export default {
       '~/components',
       '~/components/post',
       '~/components/user',
-      '~/components/auth'
+      '~/components/auth',
+      '~/components/inputs',
+      '~/components/modals'
 
     ]
   },
@@ -57,36 +64,48 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next'
+    '@nuxtjs/auth-next',
+    '@nuxtjs/firebase',
+    '@nuxtjs/pwa',
   ],
 
-  auth: {
-    localStorage: false,
-    redirect: {
-      home: '/loggingin',
-      logout: '/',
+  firebase: {
+    config: {
+      apiKey: 'AIzaSyAlbnaH-yyXyUD_NEx5mXdgvMwtb-7Zhe8',
+      authDomain: 'www.nuxt-local.com',
+      projectId: 'hark-f09f0',
+      storageBucket: 'hark-f09f0.appspot.com',
+      messagingSenderId: '242238966469',
+      appId: '1:242238966469:web:bb745be43bfd567908beac',
+      measurementId: 'G-0SE473XHC1'
     },
-    strategies: {
-      'laravelJWT': {
-        provider: 'laravel/jwt',
-        url: '/api',
-        endpoints: {
-          login: { url: '/login', method: 'post' },
-          logout: { url: '/logout', method: 'post' },
-          user: { url: '/me', method: 'post' },
+    services: {
+      auth: {
+        ssr: true,
+        initialize: {
+          onAuthStateChangedMutation: false,
+          onAuthStateChangedAction: 'firebaseAuth/ON_AUTH_STATE_CHANGED_ACTION',
         },
-        token: {
-          property: 'access_token',
-          maxAge: 60 * 60
-        }
       },
-      google: {
-        scope: ['openid', 'profile', 'email'],
-        clientId: '1007335528465-ul56rp7hhrkrmd753c74quiui34cbg2m.apps.googleusercontent.com',
-        responseType: 'id_token token',
-        codeChallengeMethod: '',
-        redirectUri: 'http://www.nuxt-local.com:3000/login',
-      },
+      firestore: true
+    }
+  },
+
+  pwa: {
+    // disable the modules you don't need
+    meta: false,
+    icon: false,
+    // if you omit a module key form configuration sensible defaults will be applied
+    // manifest: false,
+
+    workbox: {
+      importScripts: [
+        // ...
+        '/firebase-auth-sw.js'
+      ],
+      // by default the workbox module will not install the service worker in dev environment to avoid conflicts with HMR
+      // only set this true for testing and remember to always clear your browser cache in development
+      dev: process.env.NODE_ENV === 'development',
     }
   },
 
@@ -122,7 +141,6 @@ export default {
       }
     }
   },
-
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   }

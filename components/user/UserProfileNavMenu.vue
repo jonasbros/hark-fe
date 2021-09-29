@@ -57,9 +57,13 @@ export default {
                     urlName: 'user-url-about'
                 },
                 {
-                    name: 'Media',
+                    name: 'Audio Clips',
                     urlName: 'user-url-media'
                 },
+                {
+                    name: 'Videos',
+                    urlName: 'user-url-media'
+                },                
                 {
                     name: 'Friends',
                     urlName: 'user-url-friends'
@@ -82,7 +86,7 @@ export default {
             return (this.user ? this.user.custom_url : null)
         },     
         userisme() {
-            return (this.$auth.loggedIn ? this.$auth.user.custom_url == this.$route.params.url : false)
+            return (this.user.custom_url ? this.user.custom_url == this.$route.params.url : false)
         }  
     }
 

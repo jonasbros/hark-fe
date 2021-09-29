@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <article>
         <v-skeleton-loader
             v-if="$fetchState.pending"
             class='mb-6'
@@ -17,7 +17,7 @@
                 v-if="post.upload_url"
                 :src="post.upload_url"
                 min-height="200px"
-                max-height="500px"
+                max-height="280px"
                 :contain="false"
             ></v-img>
 
@@ -41,9 +41,9 @@
                 {{ likes }} likes
             </v-card-subtitle>
 
-            <v-divider v-if="$auth.loggedIn"></v-divider>
+            <v-divider v-if="$store.state.firebaseAuth.authToken"></v-divider>
 
-            <v-card-actions class="justify-space-around" v-if="$auth.loggedIn">
+            <v-card-actions class="justify-space-around" v-if="$store.state.firebaseAuth.authToken">
 
                 <v-btn
                     :class="{'font-weight-bold': isAuthLiked}"
@@ -60,7 +60,8 @@
                     color="secondary"
                     text
                     plain
-                    :ripple="false"                
+                    :ripple="false"            
+                    @click="showCommentInput = !showCommentInput"    
                 >
                     Comment
                 </v-btn>
@@ -75,12 +76,21 @@
                 </v-btn>
                 
             </v-card-actions>
+
+            <v-divider v-if="$store.state.firebaseAuth.authToken && showCommentInput"></v-divider>
+
+            <div class="px-5 pt-7 pb-5" v-show="showCommentInput">
+                <PostComment/>
+            </div>            
         </v-card>
-    </div>
+
+    </article>
     
 </template>
 
 <script>
+import * as Cookies from 'js-cookie';
+
 export default {
     props: {
         post: {
@@ -92,7 +102,8 @@ export default {
         return {
             show: false,
             likes: 0,
-            isAuthLiked: false
+            isAuthLiked: false,
+            showCommentInput: false
         }
     },
     async fetch() {
@@ -110,7 +121,7 @@ export default {
         },
 
         like() {
-            this.$axios.post(`/api/likeuserpost`, { postId: this.post.id })
+            this.$axios.post(`/api/likeUserPost`, { postId: this.post.id })
             .then((response) => {
                 if( response.data.status == 'success' ) {
                     this.likes++
@@ -123,7 +134,7 @@ export default {
         },
 
         unlike() {
-            this.$axios.post(`/api/unlikeuserpost`, { postId: this.post.id })
+            this.$axios.post(`/api/unlikeUserPost`, { postId: this.post.id })
             .then((response) => {
                 if( response.data.status == 'success' ) {
                     this.likes--
@@ -136,11 +147,12 @@ export default {
         },
 
         async getCurrentLikes() {
-            let userId = this.$auth.loggedIn ? this.$auth.user.id : null
+            let userCookie = JSON.parse(Cookies.get('user'))
+            let userId = this.$store.firebaseAuth ? this.$store.firebaseAuth.authUserInfo.id : userCookie.firebaseAuth.authUserInfo.id
 
             try {
-                let likes = await this.$axios.post(`/api/getuserpostlikes`, { postId: this.post.id, userId })
-
+                let likes = await this.$axios.post(`/api/getUserPostLikes`, { postId: this.post.id, userId })
+                
                 if( likes ) {
                     this.likes += await likes.data.likes
                     
@@ -158,6 +170,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss">
+    .v-dialog{
+        overflow: visible !important;
+    }
 </style>

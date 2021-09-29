@@ -14,7 +14,7 @@
 
         <v-row justify="center">
             <v-col class="col-6">
-                <form autocomplete="off" @submit.prevent="createUser">
+                <form autocomplete="off" @submit.prevent="createUser" method="post">
                     <v-text-field
                         autocomplete="off"
                         v-model="signup.name"
@@ -49,6 +49,8 @@
                         @blur="$v.signup.password.$touch()"                
                     ></v-text-field>
 
+                    <p>Already have an account? <NuxtLink to="/login">Log In</NuxtLink></p>
+
                     <v-btn
                         type="submit"
                         class="mr-4 my-4"
@@ -58,13 +60,6 @@
                     Sign Up
                     </v-btn>
                 </form>
-            </v-col>
-
-        </v-row>
-        
-        <v-row justify="center">
-            <v-col class="col-6">
-                <LoginGoogleButton/>
             </v-col>
 
         </v-row>
@@ -110,9 +105,9 @@ export default {
             statusMessage: '',
             submitted: false,
             signup: {
-                email: 'test1@email.com',
+                email: 'quick@email.com',
                 password: 'jost883446',
-                name: 'Jones'
+                name: 'Hehe'
             },
         }
     },
@@ -122,26 +117,62 @@ export default {
         }
     },
     methods: {
-        createUser() {
+        async createUser() {            
             this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
 
-            this.$axios.post('/api/register', this.signup)
+            try { 
+                let auth = await this.$fire.auth.createUserWithEmailAndPassword(this.signup.email, this.signup.password)
+                this.saveUserDB({ uid: auth.user.uid, ...this.signup })
+            } catch (e) { 
+                console.log(e)
+                this.signupHasErrors(e)
+            }
+        },
+
+        async saveUserDB(user) {
+            await this.$store.dispatch('firebaseAuth/SAVE_USER_FIRESTORE', user)
             .then((response) => {
+                console.log(response)
                 if( response.data.access_token ) {
-                    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
-                    this.$router.push({ name: 'newsfeed' })
+                    this.$axios.setHeader('Authorization', 'Bearer ' + response.data.access_token)
+                    this.getUserInfo(user.uid)
                 }
             })
             .catch((e) => {
-                if( e.response.status == 422 ) {
-                    this.errorMessage = e.response.data.message
-                    this.errorSnackbar = true
-
-                    this.signup.email = ''
-                    this.$v.signup.email.$touch()
-                }
-                this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
+                console.log(e)
+                this.signupHasErrors(e)
             })
+
+        },
+
+        getUserInfo(uid) {
+            this.$store.dispatch('user/FETCH_USER', uid)
+            .then((response) => {
+                this.$store.dispatch('firebaseAuth/UPDATE_USER_INFO', response.data.user)
+                this.$router.push({ name: 'newsfeed' })
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+            
+        },
+
+        signupHasErrors(e) {
+            this.errorSnackbar = true
+            this.signup.email = ''
+            this.$v.signup.email.$touch()
+
+            //message from firbase
+            if( e.code ) {
+                this.errorMessage = e.message
+            }
+
+            //message from sql db
+            if( e.response && e.response.status == 422 ) {
+                this.errorMessage = e.response.data.message
+            }
+
+            this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
         },
 
         nameErrors (errors = []) {

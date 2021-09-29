@@ -1,12 +1,13 @@
 <template>
-    <v-textarea        
+    <v-textarea      
         outlined
+        :auto-grow="true"
         :color="color"
         :label="label"
         :no-resize="true"
         :value="value"
+        :rows="rows"
         @input="updateValue"
-        @blur="$v.value.$touch()"
         :error-messages="textAreaErrors"
     ></v-textarea> 
 </template>
@@ -32,9 +33,14 @@ export default {
         },
         label: {
             type: String,
-            default: 'Base Textarea',
+           default: 'Base Textarea',
             required: false
-        },
+        }, 
+        rows: {
+            type: String | Number,
+            default: 5,
+            required: false
+        }, 
     },
     validations: {
       value: { required, maxLength: maxLength(63206) },

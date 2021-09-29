@@ -4,7 +4,10 @@
       cols="8"
       v-if="userIsMe"
     >
-      <NewPost @newPostAdded="insertNewPost" @newPostLoading="skeletonLoader = true"/>
+      <NewPost 
+        @newPostAdded="insertNewPost" 
+        @newPostLoading="skeletonLoader = true"
+      />
     </v-col>
     
     <v-col 
@@ -24,7 +27,10 @@
       v-if="posts.length"
       cols="8"
     >
-      <BasePost v-for="post in posts" :key="post.id" :post="post"/>
+      <BasePost 
+        v-for="post in posts" :key="post.id * 322" 
+        :post="post"
+      />
     </v-col>
 
     <v-col 
@@ -39,6 +45,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 
 export default {
     layout: 'userprofile',
@@ -56,7 +63,7 @@ export default {
       },
 
       customUrl() {
-        return (this.$auth.user ? this.$auth.user.custom_url : null)
+        return (this.firebaseAuth.authUserInfo ? this.firebaseAuth.authUserInfo.custom_url : null)
       },
 
       userIsMe() {
@@ -65,7 +72,9 @@ export default {
 
       noPosts() {
         return ( this.userIsMe ? 'It looks like you don\'t have posts yet.' : 'No posts to display.')
-      }
+      },
+
+      ...mapState(['firebaseAuth'])
     },
 
     async fetch() {
