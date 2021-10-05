@@ -5,6 +5,7 @@ export default {
     loginGoogleEndpoint: '/api/loginWithGoogle',
     loginGoogleUserInfoEndpoint: '/api/me',
     postsPerPage: 5,
+    commentsPerPage: 5,
     NODE_ENV: 'development'
   },
   // Global page headers: https://go.nuxtjs.dev/config-head

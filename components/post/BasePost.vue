@@ -25,13 +25,26 @@
                 {{ post.title }}
             </v-card-title>
 
-            <v-card-title class="text--primary font-weight-bold text-subtitle-1">
-                {{ post.display_name }}
-            </v-card-title>
+            <div class="d-flex align-center">
+                <UserAvatar 
+                    class="pa-3"
+                    size="48"
+                    :user="{
+                        display_name: post.display_name,
+                        profile_picture: post.profile_picture
+                    }"
+                />
 
-            <v-card-subtitle v-if="post.created_at">
-                {{ post.created_at | dateFormat }}
-            </v-card-subtitle>
+                <div class="d-inline-block">
+                    <v-card-title class="text--primary font-weight-bold text-subtitle-1 pl-0">
+                        {{ post.display_name }}
+                    </v-card-title>
+
+                    <v-card-subtitle v-if="post.created_at" class="pl-0">
+                        {{ post.created_at | dateFormat }}
+                    </v-card-subtitle>
+                </div>
+            </div>
 
             <v-card-text class="text--primary text-subtitle-1">
                 {{ post.body }}
@@ -78,10 +91,34 @@
             </v-card-actions>
 
             <v-divider v-if="$store.state.firebaseAuth.authToken && showCommentInput"></v-divider>
+          
+            <div class="px-5 pt-7 pb-5" v-show="showCommentInput">
+                <PostComment 
+                    :postId="post.id" 
+                    @newCommentAdded="insertNewComment"
+                    @newCommentLoading="skeletonLoader = true"
+                />
+            </div>             
+
+            <v-divider v-if="$store.state.firebaseAuth.authToken && showCommentInput"></v-divider>
 
             <div class="px-5 pt-7 pb-5" v-show="showCommentInput">
-                <PostComment/>
-            </div>            
+                <v-skeleton-loader
+                    v-show="skeletonLoader"
+                    class='mb-6'
+                    :boilerplate="true"
+                    elevation="2"
+                    type="list-item-avatar, divider, list-item-three-line, actions"
+                ></v-skeleton-loader>
+
+                <BaseComment 
+                    v-for="comment in comments" 
+                    :key="comment.id * 322"
+                    :comment="comment" 
+                />
+
+            </div>             
+           
         </v-card>
 
     </article>
@@ -103,14 +140,39 @@ export default {
             show: false,
             likes: 0,
             isAuthLiked: false,
-            showCommentInput: false
+            showCommentInput: false,
+            comments: [],
+            skeletonLoader: false,
+            fetchingComments: false,
+            commentsPage: 1,
         }
     },
     async fetch() {
         await this.getCurrentLikes()
+        await this.getComments()
+
     },
     fetchOnServer: false,
     methods: {
+        insertNewComment(comment) {
+            this.skeletonLoader = false
+
+            this.comments.unshift(comment)
+        },
+
+        getComments() {
+            this.fetchingComments = true
+
+            this.$axios.get(`/api/getPostComments?postId=${this.post.id}&page=${this.commentsPage}&perPage=${process.env.commentsPerPage}`)
+            .then(({ data }) => {
+                this.comments.push(...data.comments.data) 
+                this.fetchingComments = false
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+        },
+
         likeOrUnlike() {
             if( !this.isAuthLiked ) {
                 this.like()

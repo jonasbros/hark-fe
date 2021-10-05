@@ -35,7 +35,7 @@ export default {
             required: true
         },
         size: {
-            type: String,
+            type: String | Number,
             default: 64
         },
         inProfile: {
