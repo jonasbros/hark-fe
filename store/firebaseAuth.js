@@ -17,7 +17,7 @@ export const mutations = {
     SET_AUTH_HEADER_TOKEN(state, token) {
         state.authToken = token
     },
-    RESET_AUTH_MUTATION() {
+    RESET_AUTH_MUTATION(state) {
         state.authToken = null
         state.authUserInfo = null
         state.authUser = null
@@ -27,6 +27,7 @@ export const mutations = {
 export const actions = {
     async ON_AUTH_STATE_CHANGED_ACTION({ commit, dispatch }, { authUser, claims }) {
         if (!authUser) {  
+            console.log('logged out!')
             // when logging out or failed login
             commit('RESET_AUTH_MUTATION')
             return
@@ -56,7 +57,7 @@ export const actions = {
         if (res && res.locals && res.locals.user) {
             const { allClaims: claims, idToken: token, ...authUser } = res.locals.user
 
-            await dispatch('firebaseAuth/ON_AUTH_STATE_CHANGED_ACTION', {
+            await dispatch('ON_AUTH_STATE_CHANGED_ACTION', {
                 authUser,
                 claims,
                 token
@@ -78,8 +79,7 @@ export const getters = {
     },
 
     GET_USER_INFO(state) {
-        let c = JSON.parse(Cookies.get('user'))
-        let userInfo = !!state.authUserInfo ? state.authUserInfo : c.firebaseAuth.authUserInfo
+        let userInfo = !!state.authUserInfo ? state.authUserInfo : null
 
         return userInfo
     },

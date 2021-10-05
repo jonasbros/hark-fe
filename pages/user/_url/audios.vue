@@ -1,5 +1,5 @@
 <template>
-  <h1>SHOW MEDIA</h1>
+  <h1>SHOW AUDIOS</h1>
 </template>
 
 <script>

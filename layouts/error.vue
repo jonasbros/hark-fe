@@ -1,5 +1,7 @@
 <template>
-  <v-contaner>
+  <v-container>
+    <BaseNavbar v-if="!isLoggedIn"/>
+
     <h1>
       {{ pageNotFound }}
     </h1>
@@ -20,14 +22,14 @@
           size="64"
       ></v-progress-circular>
     </v-overlay>
-  </v-contaner>
+  </v-container>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex';
 
 export default {
-  layout: 'default',
+  layout: 'newsfeed',
   props: {
     error: {
       type: Object,
@@ -56,8 +58,8 @@ export default {
   created() {
     this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
 
-    if( this.isLoggedIn ) {
-      this.$nuxt.setLayout('newsfeed')
+    if( !this.isLoggedIn ) {
+      this.$nuxt.setLayout('default')
     }
   },
   mounted() {

@@ -18,6 +18,7 @@
                         color="secondary"
                         label="What's on your mind?"
                         errorMessage="Post is empty :("
+                        @setPostCursorPosition="setPostCursorPosition"
                         v-model="postContent"
                     />
                 </template>
@@ -42,6 +43,7 @@
 export default {
     data: () => ({
         postContent: '',
+        postCursorPosition: null,
     }),
     methods: {
         async post() {
@@ -61,7 +63,11 @@ export default {
         },
         
         appendEmoji(emoji) {
-            this.postContent = this.postContent + emoji
+            //insert emoji in cursor position
+            let a = this.postContent.slice(0, this.postCursorPosition)
+            let b = this.postContent.slice(this.postCursorPosition)
+            
+            this.postContent = [a, emoji, b].join('');
         },
 
         newPostAdded(newPost) {
@@ -88,6 +94,10 @@ export default {
             setTimeout(() => {
                 this.$refs.newPostTextarea.undirty()
             })
+        },
+
+        setPostCursorPosition(position) {
+            this.postCursorPosition = position
         }
     }
 }

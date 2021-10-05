@@ -52,6 +52,7 @@
                             v-on="on"
                         >
                         <UserAvatar 
+                            v-if="!!user"
                             :user="user"
                             size="34" 
                         />
@@ -61,6 +62,7 @@
 
                     <v-list>
                         <v-list-item
+                            v-if="!!user"
                             :to="{ name: 'user-url', params: { url: user.custom_url } }"
                             @click="() => {}"
                         >

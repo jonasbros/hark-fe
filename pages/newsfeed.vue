@@ -11,9 +11,6 @@
 <script>
 export default {
   layout: 'newsfeed',
-  mounted() {
-    this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
-  }
 }
 </script>
 

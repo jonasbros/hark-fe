@@ -105,7 +105,7 @@ export default {
     methods: {
         formLogin() {
             if( !this.isFormValid ) return
-            
+
             this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
             this.$fire.auth.signInWithEmailAndPassword(this.login.email, this.login.password)
             .then((response) => {
@@ -157,7 +157,6 @@ export default {
         getAuthUser(email) {
             this.$store.dispatch(`firebaseAuth/GET_USER_DB`, email)
             .then((response) => {
-                console.log(response)
                 this.$store.commit('firebaseAuth/SET_USER_INFO', { ...response.data.user })
                 this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
                 this.$router.push({ name: 'newsfeed' })

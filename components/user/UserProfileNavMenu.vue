@@ -49,25 +49,30 @@ export default {
         return {
             menuItems: [
                 {
-                    name: 'Posts',
+                    name: 'Feed',
                     urlName: 'user-url',
                 },
                 {
-                    name: 'About',
-                    urlName: 'user-url-about'
-                },
-                {
-                    name: 'Audio Clips',
-                    urlName: 'user-url-media'
-                },
+                    name: 'Collabs',
+                    urlName: 'user-url-collabs'
+                },  
                 {
                     name: 'Videos',
-                    urlName: 'user-url-media'
-                },                
+                    urlName: 'user-url-videos'
+                },   
                 {
-                    name: 'Friends',
-                    urlName: 'user-url-friends'
+                    name: 'Audio',
+                    urlName: 'user-url-audios'
+                },     
+                {
+                    name: 'About',
+                    urlName: 'user-url-about'
+                },      
+                {
+                    name: 'Ties',
+                    urlName: 'user-url-ties'
                 },
+
             ],
             menuItems2: [
                 {

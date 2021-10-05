@@ -9,6 +9,7 @@
         :rows="rows"
         @input="updateValue"
         :error-messages="textAreaErrors"
+        @click="getCursorPos"
     ></v-textarea> 
 </template>
 
@@ -60,6 +61,10 @@ export default {
         },
         undirty() {
             this.$v.value.$reset()
+        },
+        
+        getCursorPos(e) {
+            this.$emit('setPostCursorPosition', e.target.selectionStart)
         }
     }
 }

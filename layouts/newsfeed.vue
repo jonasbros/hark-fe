@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <AuthNavbar v-if="user" :user="user"/>
+    <AuthNavBar :user="user"/>
 
     <v-main>
       <v-row class="justify-center">
@@ -41,17 +41,17 @@ export default {
         isLoggedIn: 'firebaseAuth/GET_IS_LOGGED_IN'
       })
     },
+    created() {
+      this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
+    },
     mounted() {
-        this.checkUserAuth()
+      this.checkUserAuth()
     },
     methods: {
       checkUserAuth() {
-        if( this.isLoggedIn ) {
-          this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
-        }else {
-          this.logout()
-        }
-        
+        if( !this.isLoggedIn ) { this.logout(); return; }        
+
+        this.$store.dispatch('UPDATE_IS_PAGE_LOADING', false)
       },
 
       logout() {
@@ -66,7 +66,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss">
-
-</style>

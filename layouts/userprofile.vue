@@ -1,6 +1,6 @@
 <template>
     <v-app id="infinite-scroll-target"> 
-        <AuthNavbar v-if="user" :user="user"/>
+        <AuthNavBar v-if="!!user" :user="user"/>
         <BaseNavbar v-else />
 
         <v-main>
@@ -13,7 +13,7 @@
                       <v-row>
                           <v-col class="col-12 pt-6">
                               <UserProfileHeader
-                                v-if="user"
+                                v-if="!!user"
                                 :user="user"
                               />
                           </v-col>
@@ -21,7 +21,7 @@
 
                       <v-row>
                           <v-col class="col-12 pt-6">
-                              <Nuxt v-if="user"/>
+                              <Nuxt v-if="!!user"/>
                           </v-col>
                       </v-row>
                   </v-container>
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
     data() {
@@ -63,6 +63,9 @@ export default {
     },
     computed: {
       ...mapState(['isPageLoading', 'firebaseAuth']),
+      ...mapGetters({
+        isLoggedIn: 'firebaseAuth/GET_IS_LOGGED_IN'
+      })
     },
 
     async fetch() {
