@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <AuthNavBar :user="user"/>
+    <AuthNavBar ref="AuthNavBarRef" :user="user"/>
 
     <v-main>
       <v-row class="justify-center">
@@ -41,12 +41,15 @@ export default {
         isLoggedIn: 'firebaseAuth/GET_IS_LOGGED_IN'
       })
     },
+
     created() {
       this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
     },
+
     mounted() {
       this.checkUserAuth()
     },
+    
     methods: {
       checkUserAuth() {
         if( !this.isLoggedIn ) { this.logout(); return; }        
@@ -55,12 +58,7 @@ export default {
       },
 
       logout() {
-          this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
-
-          this.$axios.setHeader('Authorization', '')
-          this.$fire.auth.signOut()
-          //temporary solution. router.push() / changing route crashes after signout 
-          location.href = '/login'
+        this.$refs.AuthNavBarRef.logout()
       },
 
     }

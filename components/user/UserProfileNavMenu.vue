@@ -69,8 +69,8 @@ export default {
                     urlName: 'user-url-about'
                 },      
                 {
-                    name: 'Ties',
-                    urlName: 'user-url-ties'
+                    name: 'Friends',
+                    urlName: 'user-url-friends'
                 },
 
             ],

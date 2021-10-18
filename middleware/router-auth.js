@@ -2,13 +2,13 @@ export default function({ $fire, store, redirect, error, route, app }) {
     let email = $fire.auth.currentUser ? $fire.auth.currentUser.email : null
 
     app.router.beforeResolve((to, from, next) => {
-      if ( !$fire.auth.currentUser && requireAuthentication(route) ){
+      if ( !store.state.firebaseAuth.isLoggedIn && requireAuthentication(route) ){
         next({ name: 'login' })
       }else {
         next()
       }
 
-      if( !store.state.firebaseAuth.authUserInfo && !ignoredRoutes(route) ) {
+      if( store.state.firebaseAuth.isLoggedIn && !ignoredRoutes(route) ) {
 
       }
     })

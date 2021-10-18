@@ -1,85 +1,100 @@
 <template>
-    <article>
-        <v-card
-            class="mx-auto mb-8"
-            max-width="100%"
-            elevation="0"
-            outlined
-        >
-            <div class="d-flex align-center">
-                <UserAvatar 
-                    class="pa-3"
-                    size="48"
-                    :user="{
-                        display_name: comment.display_name,
-                        profile_picture: comment.profile_picture
-                    }"
-                />
+    <article class="hark-comment mb-5">
+        <div class="hark-comment__content d-flex flex-row">
+            <UserAvatar 
+                class="pa-3"
+                size="42"
+                :user="{
+                    display_name: comment.display_name,
+                    profile_picture: comment.profile_picture
+                }"
+            />
 
-                <div class="d-inline-block">
-                    <v-card-title class="text--primary font-weight-bold text-subtitle-1 pl-0">
-                        {{ comment.display_name }}
-                    </v-card-title>
+            <div class="hark-comment__content__body my-2 light_grey py-1 px-3">
+                <p class="ma-0">{{ comment.display_name }}</p>
+                <p class="hark__content-body ma-0">{{ comment.body }}</p>
 
-                    <v-card-subtitle v-if="comment.created_at" class="pl-0">
-                        {{ comment.created_at | dateFormat }}
-                    </v-card-subtitle>
+                <div class="hark-comment__content__footer">
+                    <v-btn
+                        class="font-weight-bold"
+                        color="secondary"
+                        text
+                        plain
+                        x-small
+                        :ripple="false"
+                        @click="like"
+                    >
+                        Like
+                    </v-btn>
+
+                    <v-btn
+                        color="secondary"
+                        text
+                        plain
+                        x-small
+                        :ripple="false"            
+                    >
+                        Reply
+                    </v-btn>
+                    
+                    <small>
+                        {{ comment.created_at | dateFormatFromNow }}
+                    </small>
                 </div>
             </div>
+        </div>
 
 
-            <v-card-text class="text--primary text-subtitle-1">
-                {{ comment.body }}
-            </v-card-text>
 
-            <!-- <v-card-subtitle>
-                {{ likes }} likes
-            </v-card-subtitle> -->
-
-            <v-divider v-if="$store.state.firebaseAuth.authToken"></v-divider>
-
-            <v-card-actions class="justify-space-around" v-if="$store.state.firebaseAuth.authToken">
-
-                <v-btn
-                    :class="{'font-weight-bold': isAuthLiked}"
-                    :color="isAuthLiked ? 'primary' : 'secondary'"
-                    text
-                    plain
-                    :ripple="false"
-                    @click="likeOrUnlike"
-                >
-                    Like
-                </v-btn>
-
-                <v-btn
-                    color="secondary"
-                    text
-                    plain
-                    :ripple="false"            
-                    @click="showCommentInput = !showCommentInput"    
-                >
-                    Reply
-                </v-btn>
-                
-            </v-card-actions>         
-        </v-card>
     </article>
 </template>
 
 <script>
 export default {
     props: {
+        postId: {
+            type: Number | String,
+            required: true
+        },
         comment: {
             type: Object,
             required: true
         }
     },
     data: () => ({
-        
+        likes: 0,
+        isUserLiked: false,
     }),
+    methods: {
+        like() {
+            this.$axios.post(`/api/likeUserPostComment`, { postId: this.postId })
+            .then((response) => {
+                if( response.data.status == 'success' ) {
+                    this.likes++
+                    this.isUserLiked = true
+                }
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+        }
+    }
 }
 </script>
 
-<style>
+<style lang="scss">
+    .hark-comment__content__body {
+        position: relative;
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+        border-top-right-radius: 15px;
+    }
 
+    .hark-comment__content__footer {
+        position: absolute;
+        min-width: 240px;
+        left: 0;
+        bottom: -22px;
+    }
 </style>

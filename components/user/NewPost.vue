@@ -18,6 +18,8 @@
                         color="secondary"
                         label="What's on your mind?"
                         errorMessage="Post is empty :("
+                        @BaseTextAreaSubmit="post"
+                        @BaseTextAreaNewLine="addNewLine"
                         @setPostCursorPosition="setPostCursorPosition"
                         v-model="postContent"
                     />
@@ -98,6 +100,10 @@ export default {
 
         setPostCursorPosition(position) {
             this.postCursorPosition = position
+        },
+
+        addNewLine() {
+            this.postContent += '\n'
         }
     }
 }

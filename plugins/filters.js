@@ -3,11 +3,21 @@ import moment from 'moment-timezone'
 
 Vue.filter('dateFormat', function(date) {
     date = date + ' UTC'
+    let now = moment()
     let tz = moment.tz.guess()
-    let d = moment(date).tz(tz).format('MMM DD, YYYY')
-    let t = moment(date).tz(tz).format('hh:mm a')
 
-    return `${d} at ${t}`
+    if( now.diff(date, 'days') >= 2 ) {
+        return moment(date).tz(tz).format('MMM DD, YYYY [at] hh:mm a')
+    }
+    
+    return moment(date).tz(tz).fromNow()
+})
+
+Vue.filter('dateFormatFromNow', function(date) {
+    date = date + ' UTC'
+    let tz = moment.tz.guess()
+
+    return moment(date).tz(tz).fromNow()
 })
 
 

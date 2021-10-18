@@ -1,5 +1,6 @@
 <template>
-    <v-textarea      
+    <v-textarea 
+        class="hark__base-textarea"     
         outlined
         :auto-grow="true"
         :color="color"
@@ -7,8 +8,11 @@
         :no-resize="true"
         :value="value"
         :rows="rows"
-        @input="updateValue"
         :error-messages="textAreaErrors"
+        @blur="undirty"
+        @input="updateValue"
+        @keydown.enter.exact.prevent="$emit('BaseTextAreaSubmit')"
+        @keydown.shift.enter.exact.prevent="shiftEnterEvent"
         @click="getCursorPos"
     ></v-textarea> 
 </template>
@@ -56,11 +60,19 @@ export default {
         }
     },
     methods: {
+        shiftEnterEvent() {
+            this.$emit('BaseTextAreaNewLine')
+            this.undirty()
+        },
         updateValue(value) {
             this.$emit('input', value)
         },
         undirty() {
             this.$v.value.$reset()
+        },
+
+        blur() {
+            document.querySelector('.hark__base-textarea textarea').blur()
         },
         
         getCursorPos(e) {

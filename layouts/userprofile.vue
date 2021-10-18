@@ -1,6 +1,6 @@
 <template>
     <v-app id="infinite-scroll-target"> 
-        <AuthNavBar v-if="!!user" :user="user"/>
+        <AuthNavBar v-if="user" :user="user"/>
         <BaseNavbar v-else />
 
         <v-main>
@@ -67,12 +67,9 @@ export default {
         isLoggedIn: 'firebaseAuth/GET_IS_LOGGED_IN'
       })
     },
-
+    fetchOnServer: false,
     async fetch() {
       this.$store.dispatch('UPDATE_IS_PAGE_LOADING', true)
-    },
-
-    async created() {
       //get user profile info,
       try {
         let getUser = await this.$store.dispatch('user/GET_CURRENT_PROFILE_OWNER', this.$route.params.url)
@@ -83,6 +80,10 @@ export default {
         console.log(e)
         this.$nuxt.error({ message: e, statusCode: 404 })
       }
+    },
+
+    async created() {
+
     },
 
     methods: {

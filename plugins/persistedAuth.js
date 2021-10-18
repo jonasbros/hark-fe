@@ -36,7 +36,7 @@ function authToken(store, $axios) {
         if( !Cookies.get(key) ) return
 
         let token = JSON.parse(Cookies.get(key))
-        $axios.setHeader('Authorization', token.firebaseAuth.authToken)
+        store.dispatch('firebaseAuth/UPDATE_AUTH_HEADER_TOKEN', token.firebaseAuth.authToken)
         return Cookies.get(key)
       },
       // Please see https://github.com/js-cookie/js-cookie#json, on how to handle JSON.

@@ -30,3 +30,8 @@
     min-height: calc(100vh - 64px);
     padding: 0 !important;
 }
+
+.hark__content-body {
+    word-wrap: break-word;      /* IE 5.5-7 */
+    white-space: pre-wrap;      /* Modern browsers */
+}

@@ -28,7 +28,7 @@
       cols="8"
     >
       <BasePost 
-        v-for="post in posts" :key="post.id * 322" 
+        v-for="post in posts" :key="'post' + post.id" 
         :post="post"
       />
     </v-col>

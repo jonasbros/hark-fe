@@ -132,6 +132,7 @@ export default {
           accent: '#000D1F',
           secondary: '#FFFFC2',
           dark_grey: '#1E1E1E',
+          light_grey: '#454545',
           hark_black: '#0E0E0E',
           grey: '#BDBDBD',
           info: '#909399',

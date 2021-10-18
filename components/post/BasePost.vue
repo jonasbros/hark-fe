@@ -47,11 +47,17 @@
             </div>
 
             <v-card-text class="text--primary text-subtitle-1">
-                {{ post.body }}
+                <div class="hark__content-body">{{ post.body }}</div>
             </v-card-text>
 
             <v-card-subtitle>
-                {{ likes }} likes
+                <span class="mr-2">{{ likes }} likes</span>
+                <span 
+                    class="hark__comments-counter"
+                    @click="showCommentInput = !showCommentInput"
+                >
+                    {{ commentsCount }} comments
+                </span> 
             </v-card-subtitle>
 
             <v-divider v-if="$store.state.firebaseAuth.authToken"></v-divider>
@@ -59,8 +65,8 @@
             <v-card-actions class="justify-space-around" v-if="$store.state.firebaseAuth.authToken">
 
                 <v-btn
-                    :class="{'font-weight-bold': isAuthLiked}"
-                    :color="isAuthLiked ? 'primary' : 'secondary'"
+                    :class="{'font-weight-bold': isUserLiked}"
+                    :color="isUserLiked ? 'primary' : 'secondary'"
                     text
                     plain
                     :ripple="false"
@@ -92,7 +98,7 @@
 
             <v-divider v-if="$store.state.firebaseAuth.authToken && showCommentInput"></v-divider>
           
-            <div class="px-5 pt-7 pb-5" v-show="showCommentInput">
+            <div class="px-3 pt-5 pb-0" v-show="showCommentInput">
                 <PostComment 
                     :postId="post.id" 
                     @newCommentAdded="insertNewComment"
@@ -102,7 +108,7 @@
 
             <v-divider v-if="$store.state.firebaseAuth.authToken && showCommentInput"></v-divider>
 
-            <div class="px-5 pt-7 pb-5" v-show="showCommentInput">
+            <div class="px-2 pt-4 pb-3" v-show="showCommentInput">
                 <v-skeleton-loader
                     v-show="skeletonLoader"
                     class='mb-6'
@@ -113,8 +119,9 @@
 
                 <BaseComment 
                     v-for="comment in comments" 
-                    :key="comment.id * 322"
+                    :key="'comment' + comment.id"
                     :comment="comment" 
+                    :postId="post.id"
                 />
 
             </div>             
@@ -137,14 +144,14 @@ export default {
     },
     data() {
         return {
-            show: false,
             likes: 0,
-            isAuthLiked: false,
+            isUserLiked: false,
             showCommentInput: false,
             comments: [],
             skeletonLoader: false,
             fetchingComments: false,
             commentsPage: 1,
+            commentsCount: 0,
         }
     },
     async fetch() {
@@ -166,6 +173,7 @@ export default {
             this.$axios.get(`/api/getPostComments?postId=${this.post.id}&page=${this.commentsPage}&perPage=${process.env.commentsPerPage}`)
             .then(({ data }) => {
                 this.comments.push(...data.comments.data) 
+                this.commentsCount = data.count
                 this.fetchingComments = false
             })
             .catch((e) => {
@@ -174,7 +182,7 @@ export default {
         },
 
         likeOrUnlike() {
-            if( !this.isAuthLiked ) {
+            if( !this.isUserLiked ) {
                 this.like()
                 return
             }
@@ -187,7 +195,7 @@ export default {
             .then((response) => {
                 if( response.data.status == 'success' ) {
                     this.likes++
-                    this.isAuthLiked = true
+                    this.isUserLiked = true
                 }
             })
             .catch((e) => {
@@ -200,7 +208,7 @@ export default {
             .then((response) => {
                 if( response.data.status == 'success' ) {
                     this.likes--
-                    this.isAuthLiked = false
+                    this.isUserLiked = false
                 }
             })
             .catch((e) => {
@@ -219,7 +227,7 @@ export default {
                     this.likes += await likes.data.likes
                     
                     if( likes.data.userLiked ) {
-                        this.isAuthLiked = true
+                        this.isUserLiked = true
                     }
                 }
 
@@ -228,6 +236,7 @@ export default {
                 console.log(e)
             }
         }
+        
     }
 }
 </script>
@@ -235,5 +244,9 @@ export default {
 <style lang="scss">
     .v-dialog{
         overflow: visible !important;
+    }
+
+    .hark__comments-counter {
+        cursor: pointer;
     }
 </style>

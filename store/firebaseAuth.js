@@ -5,11 +5,13 @@ export const state = () => ({
     authUser: null,
     authUserInfo: null,
     authToken: null,
+    isLoggedIn: false
 })
   
 export const mutations = {
     SET_USER(state, user) {
         state.authUser = { ...user }
+        state.isLoggedIn = true
     },
     SET_USER_INFO(state, userInfo) {
         state.authUserInfo = userInfo
@@ -21,13 +23,15 @@ export const mutations = {
         state.authToken = null
         state.authUserInfo = null
         state.authUser = null
+    },
+    SET_IS_LOGGED_IN(state, isLoggedIn) {
+        state.isLoggedIn = isLoggedIn
     }               
 }
 
 export const actions = {
     async ON_AUTH_STATE_CHANGED_ACTION({ commit, dispatch }, { authUser, claims }) {
         if (!authUser) {  
-            console.log('logged out!')
             // when logging out or failed login
             commit('RESET_AUTH_MUTATION')
             return
@@ -67,9 +71,9 @@ export const actions = {
     },
 
     UPDATE_AUTH_HEADER_TOKEN({ commit }, authToken) {
-        let token = 'Bearer ' + authToken
-        this.$axios.setHeader('Authorization', token)
-        commit('SET_AUTH_HEADER_TOKEN', token)
+        this.$axios.setHeader('Authorization', 'Bearer ' + authToken)
+        commit('SET_IS_LOGGED_IN', true)
+        commit('SET_AUTH_HEADER_TOKEN', authToken)
     }
 }
 
@@ -79,12 +83,12 @@ export const getters = {
     },
 
     GET_USER_INFO(state) {
-        let userInfo = !!state.authUserInfo ? state.authUserInfo : null
+        let userInfo = state.isLoggedIn ? state.authUserInfo : null
 
         return userInfo
     },
 
     GET_IS_LOGGED_IN(state) {
-        return !!state.authUserInfo
+        return state.isLoggedIn
     }
 }

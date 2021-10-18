@@ -12,21 +12,13 @@
                     label="Post a comment"
                     rows="1"
                     errorMessage="Comment is empty :("
+                    @BaseTextAreaSubmit="post"
+                    @BaseTextAreaNewLine="addNewLine"
                     v-model="commentContent"
                 />
             </template>
 
         </BasePostInput>
-
-        <v-btn
-            class="align-self-end"
-            color="primary"
-            text
-            :ripple="false"
-            @click="post"
-        >
-            Post Comment
-        </v-btn>
     </div>
 
 </template>
@@ -49,18 +41,24 @@ export default {
         post() {
             this.$refs.newPostTextarea.$v.value.$touch()
 
-            if( this.commentContent == '' ) return
+            if( !this.commentContent.replace(/[\n\r\t]/g, "") || !this.commentContent ) return
             this.$emit('newCommentLoading')
 
 
-            this.$axios.post(`/api/getPostComments`, { postId: this.postId, commentContent: this.commentContent })
+            this.$axios.post(`/api/submitUserBasePostComment`, { postId: this.postId, commentContent: this.commentContent })
             .then((response) => {
-                console.log(response)
+                this.commentContent = ''
+                this.$refs.newPostTextarea.undirty()
+                this.$refs.newPostTextarea.blur()
                 this.$emit('newCommentAdded', response.data.comment[0])
             })
             .catch((e) => {
                 console.log(e)
             })
+        },
+
+        addNewLine() {
+            this.commentContent += '\n'
         }
     }
 }
