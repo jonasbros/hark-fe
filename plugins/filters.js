@@ -2,7 +2,7 @@ import Vue from 'vue'
 import moment from 'moment-timezone'
 
 Vue.filter('dateFormat', function(date) {
-    date = date + ' UTC'
+    // date = date.slice(0, -1) + ' UTC'
     let now = moment()
     let tz = moment.tz.guess()
 

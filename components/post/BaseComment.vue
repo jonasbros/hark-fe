@@ -16,8 +16,8 @@
 
                 <div class="hark-comment__content__footer">
                     <v-btn
-                        class="font-weight-bold"
-                        color="secondary"
+                        :class="{'font-weight-bold': isUserLiked}"
+                        :color="isUserLiked ? 'primary' : 'secondary'"
                         text
                         plain
                         x-small
@@ -61,13 +61,32 @@ export default {
             required: true
         }
     },
+    fetchOnServer: false,
     data: () => ({
         likes: 0,
         isUserLiked: false,
     }),
+    async fetch() {
+        this.isUserLiked = this.comment.userLiked
+        this.likes = this.comment.likes.length
+    },
     methods: {
+        likeOrUnlike() {
+            if( !this.isUserLiked ) {
+                this.like()
+                return
+            }
+
+            this.unlike()
+        },
+
         like() {
-            this.$axios.post(`/api/likeUserPostComment`, { postId: this.postId })
+            let likeObj = { 
+                postId: this.postId,
+                commentId: this.comment.id
+            }
+
+            this.$axios.post(`/api/likeUserPostComment`, likeObj)
             .then((response) => {
                 if( response.data.status == 'success' ) {
                     this.likes++
@@ -77,7 +96,12 @@ export default {
             .catch((e) => {
                 console.log(e)
             })
-        }
+        },
+
+        unlike() {
+
+        },
+
     }
 }
 </script>

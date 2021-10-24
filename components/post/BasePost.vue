@@ -82,7 +82,7 @@
                     :ripple="false"            
                     @click="showCommentInput = !showCommentInput"    
                 >
-                    Comment
+                    Comments
                 </v-btn>
 
                 <v-btn
@@ -124,6 +124,25 @@
                     :postId="post.id"
                 />
 
+                <v-skeleton-loader
+                    v-show="loadCommentsSkeletonLoader"
+                    class='mb-6'
+                    :boilerplate="true"
+                    elevation="2"
+                    type="list-item-avatar, divider, list-item-three-line, actions"
+                ></v-skeleton-loader>
+
+                <v-btn
+                    v-show="commentsCount > 5"
+                    color="secondary"
+                    text
+                    plain
+                    x-small
+                    :ripple="false"      
+                    @click="getCommentsNextPage"      
+                >
+                    Load more comments...
+                </v-btn>
             </div>             
            
         </v-card>
@@ -133,14 +152,12 @@
 </template>
 
 <script>
-import * as Cookies from 'js-cookie';
-
 export default {
     props: {
         post: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {
@@ -155,11 +172,15 @@ export default {
         }
     },
     async fetch() {
-        await this.getCurrentLikes()
+        this.likes = this.post.likes.length
+        this.isUserLiked = this.post.userLiked
         await this.getComments()
-
     },
     fetchOnServer: false,
+    mounted() {
+
+    },
+    // fetchOnServer: false,
     methods: {
         insertNewComment(comment) {
             this.skeletonLoader = false
@@ -173,12 +194,19 @@ export default {
             this.$axios.get(`/api/getPostComments?postId=${this.post.id}&page=${this.commentsPage}&perPage=${process.env.commentsPerPage}`)
             .then(({ data }) => {
                 this.comments.push(...data.comments.data) 
-                this.commentsCount = data.count
+                this.commentsCount = data.comments.total
                 this.fetchingComments = false
+                this.loadCommentsSkeletonLoader = false
             })
             .catch((e) => {
                 console.log(e)
             })
+        },
+
+        getCommentsNextPage() {
+            this.loadCommentsSkeletonLoader = true
+            this.commentsPage++
+            this.getComments()
         },
 
         likeOrUnlike() {
@@ -214,29 +242,7 @@ export default {
             .catch((e) => {
                 console.log(e)
             })
-        },
-
-        async getCurrentLikes() {
-            let userCookie = JSON.parse(Cookies.get('user'))
-            let userId = this.$store.firebaseAuth ? this.$store.firebaseAuth.authUserInfo.id : userCookie.firebaseAuth.authUserInfo.id
-
-            try {
-                let likes = await this.$axios.post(`/api/getUserPostLikes`, { postId: this.post.id, userId })
-                
-                if( likes ) {
-                    this.likes += await likes.data.likes
-                    
-                    if( likes.data.userLiked ) {
-                        this.isUserLiked = true
-                    }
-                }
-
-            
-            }catch(e) {
-                console.log(e)
-            }
-        }
-        
+        },        
     }
 }
 </script>
