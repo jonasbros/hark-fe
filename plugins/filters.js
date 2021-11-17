@@ -14,7 +14,7 @@ Vue.filter('dateFormat', function(date) {
 })
 
 Vue.filter('dateFormatFromNow', function(date) {
-    date = date + ' UTC'
+    // date = date + ' UTC'
     let tz = moment.tz.guess()
 
     return moment(date).tz(tz).fromNow()

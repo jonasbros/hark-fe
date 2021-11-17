@@ -14,6 +14,25 @@
                 <p class="ma-0">{{ comment.display_name }}</p>
                 <p class="hark__content-body ma-0">{{ comment.body }}</p>
 
+
+                <v-chip
+                    v-if="likes"
+                    class="hark-comment__likes-count px-2"
+                    color="light_grey"
+                    text-color="primary"
+                    small
+                    >
+                        <v-avatar 
+                            left 
+                            class="ma-0"
+                        >
+                            <v-icon>
+                                mdi-thumb-up
+                            </v-icon>
+                        </v-avatar>
+                        {{likes}}
+                </v-chip>
+
                 <div class="hark-comment__content__footer">
                     <v-btn
                         :class="{'font-weight-bold': isUserLiked}"
@@ -22,7 +41,7 @@
                         plain
                         x-small
                         :ripple="false"
-                        @click="like"
+                        @click="likeOrUnlike"
                     >
                         Like
                     </v-btn>
@@ -81,12 +100,7 @@ export default {
         },
 
         like() {
-            let likeObj = { 
-                postId: this.postId,
-                commentId: this.comment.id
-            }
-
-            this.$axios.post(`/api/likeUserPostComment`, likeObj)
+            this.$axios.post(`/api/likeUserPostComment`, { postId: this.postId, commentId: this.comment.id })
             .then((response) => {
                 if( response.data.status == 'success' ) {
                     this.likes++
@@ -99,7 +113,16 @@ export default {
         },
 
         unlike() {
-
+            this.$axios.post(`/api/unlikeUserPostComment`, { postId: this.postId, commentId: this.comment.id })
+            .then((response) => {
+                if( response.data.status == 'success' ) {
+                    this.likes--
+                    this.isUserLiked = false
+                }
+            })
+            .catch((e) => {
+                console.log(e)
+            })
         },
 
     }
@@ -120,5 +143,11 @@ export default {
         min-width: 240px;
         left: 0;
         bottom: -22px;
+    }
+
+    .hark-comment__likes-count {
+        position: absolute !important;
+        right: -1em;
+        bottom: -0.25em;
     }
 </style>
